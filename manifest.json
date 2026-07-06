@@ -1,0 +1,19 @@
+{
+  "name": "Happy Alaa",
+  "short_name": "Happy Alaa",
+  "description": "Happy Alaa - Emotion Interactive Game",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8E7",
+  "theme_color": "#FF6B6B",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "Character Model/Blue-white/normal.png",
+      "sizes": "771x1711",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

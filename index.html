@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Happy Alaa">
+<link rel="manifest" href="manifest.json">
+<title>Happy Alaa - 开心阿拉</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FFF8E7;
+  --card-bg: #FFFFFF;
+  --text: #4A3728;
+  --accent: #FF6B6B;
+  --accent2: #4ECDC4;
+  --btn-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  --radius: 20px;
+  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.phone-frame {
+  width: 100vw;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #FFF8E7 0%, #FFECD2 40%, #FFE4C4 100%);
+  box-shadow: 0 0 60px rgba(0,0,0,0.15);
+}
+
+/* ===== HOME PAGE ===== */
+.page { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; }
+.page.active { display: flex; }
+
+/* Language bar */
+.lang-bar {
+  display: flex; gap: 6px; padding: 12px 16px; width: 100%;
+  justify-content: flex-end; z-index: 10;
+}
+.lang-btn {
+  border: 2px solid #E0D5C7; background: white; color: #8B7355;
+  padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-family: var(--font);
+}
+.lang-btn.active { background: #FF6B6B; color: white; border-color: #FF6B6B; }
+.lang-btn:active { transform: scale(0.95); }
+
+/* Title */
+.home-title-area { text-align: center; margin-top: 10px; z-index: 10; }
+.home-title { font-size: 32px; font-weight: 800; color: #4A3728; }
+.home-subtitle { font-size: 14px; color: #B0977A; margin-top: 2px; }
+
+/* Mode grid */
+.mode-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; padding: 12px 28px; width: 100%; max-width: 320px;
+  flex: 0 0 auto; z-index: 10; margin-top: 8px;
+}
+.mode-btn {
+  aspect-ratio: 1;
+  border-radius: var(--radius); border: none;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: var(--btn-shadow);
+  font-family: var(--font);
+}
+.mode-btn:active { transform: scale(0.94); }
+.mode-btn.sad    { background: linear-gradient(135deg, #A8D8EA, #C9E7F2); }
+.mode-btn.happy  { background: linear-gradient(135deg, #FFE66D, #FFF3A0); }
+.mode-btn.angry  { background: linear-gradient(135deg, #FF8A80, #FFB4B0); }
+.mode-btn.scared { background: linear-gradient(135deg, #5C6BC0, #9FA8DA); }
+
+.mode-emoji { font-size: 36px; margin-bottom: 2px; }
+.mode-label-main { font-size: 15px; font-weight: 700; color: #4A3728; }
+.mode-label-sub  { font-size: 10px; color: #6B5B4B; opacity: 0.7; margin-top: 1px; }
+
+/* Bottom character */
+.home-char {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  height: 38%; z-index: 5; pointer-events: none;
+}
+.home-char img { height: 100%; object-fit: contain; }
+
+/* ===== ANIMATION PAGE ===== */
+.anim-scene {
+  position: relative; width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, #FFF8E7 0%, #FFECD2 55%, #E8D5C0 100%);
+}
+.anim-sky { flex: 1; position: relative; overflow: hidden; }
+.ground {
+  height: 8%; background: linear-gradient(180deg, #D4C4A8, #C4B498);
+  position: relative; z-index: 2;
+}
+
+.back-btn {
+  position: absolute; top: 14px; left: 14px; z-index: 20;
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.85); font-size: 18px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Character containers in animation */
+.char-container {
+  position: absolute; bottom: 8%; z-index: 10;
+  transition: none;
+}
+.char-container img {
+  height: 100%; object-fit: contain; display: block;
+}
+#protagonist {
+  left: 50%; transform: translateX(-50%);
+  height: 45%;
+}
+#companion {
+  height: 42%;
+  left: 120%; /* offscreen */
+  transform: translateX(0);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#companion.visible { opacity: 1; }
+
+/* Balloon */
+.balloon {
+  position: absolute; width: 40px; height: 50px;
+  background: radial-gradient(circle at 35% 30%, #FF6B6B, #E55555);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  z-index: 15; transform-origin: bottom center;
+  display: none;
+}
+.balloon::after {
+  content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 14px; background: #888;
+}
+.balloon::before {
+  content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 10px solid #E55555;
+}
+
+/* Particles */
+.particle {
+  position: absolute; pointer-events: none; z-index: 25;
+  animation: particleFly 1.2s ease-out forwards;
+  font-size: 24px;
+}
+@keyframes particleFly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(0.3) rotate(0deg); }
+  50%  { opacity: 1; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(180deg); }
+  100% { opacity: 0; transform: translate(var(--dx2), var(--dy2)) scale(0.6) rotate(360deg); }
+}
+
+/* Text bubble */
+.text-bubble {
+  position: absolute; z-index: 20; background: white;
+  border-radius: 16px; padding: 8px 14px; font-size: 13px;
+  font-weight: 600; color: #4A3728; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  white-space: nowrap; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.text-bubble::after {
+  content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid white;
+}
+.text-bubble.above::after {
+  top: auto; bottom: -8px;
+  border-bottom: none;
+  border-top: 10px solid white;
+}
+
+/* ===== RESULT PAGE ===== */
+.result-content {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; flex: 1; gap: 12px;
+  width: 100%; overflow: hidden;
+}
+.result-char {
+  height: 35vh; max-height: 260px; min-height: 160px;
+  display: flex; align-items: center; justify-content: center;
+}
+.result-char img {
+  max-height: 100%; max-width: 100%; height: auto; width: auto;
+  object-fit: contain; object-position: center center;
+}
+.result-msg { font-size: 20px; font-weight: 700; color: #4A3728; text-align: center; }
+.result-btns {
+  display: flex; gap: 10px; margin-top: 6px;
+  flex-wrap: wrap; justify-content: center;
+}
+.result-btn {
+  padding: 10px 22px; border-radius: 30px; border: none;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); transition: transform 0.15s;
+  box-shadow: var(--btn-shadow); white-space: nowrap;
+  position: relative; z-index: 50;
+}
+.result-btn:active { transform: scale(0.95); }
+.result-btn.primary { background: #FF6B6B; color: white; }
+.result-btn.secondary { background: white; color: #4A3728; }
+
+/* RTL */
+body.rtl .lang-bar { flex-direction: row-reverse; }
+body.rtl .back-btn { left: auto; right: 14px; }
+body.rtl .text-bubble { direction: rtl; }
+body.rtl .my-panel { left: auto; right: 0; }
+
+/* ===== MY PANEL ===== */
+.my-btn {
+  position: absolute; top: 12px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.my-btn:active { transform: scale(0.9); }
+
+.my-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4); display: none;
+  justify-content: flex-end; flex-direction: column;
+}
+.my-overlay.open { display: flex; }
+
+.my-panel {
+  background: white; border-radius: 24px 24px 0 0;
+  max-height: 65vh; overflow-y: auto; padding: 20px 16px 30px;
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.my-tabs { display: flex; gap: 0; margin-bottom: 16px; border-radius: 12px; overflow: hidden; }
+.my-tab {
+  flex: 1; padding: 10px; border: none; background: #F0EBE3;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); color: #8B7355; transition: all 0.2s;
+}
+.my-tab.active { background: #FF6B6B; color: white; }
+
+.my-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.my-item {
+  aspect-ratio: 0.55; border-radius: 14px; overflow: hidden;
+  cursor: pointer; border: 3px solid transparent;
+  background: #F8F5F0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: border-color 0.2s; padding: 4px;
+}
+.my-item img { height: 78%; object-fit: contain; }
+.my-item .item-label { font-size: 10px; color: #8B7355; text-align: center; line-height: 1.3; padding-top: 2px; }
+.my-item.selected { border-color: #FF6B6B; }
+
+.my-close {
+  position: sticky; top: 0; float: right; z-index: 5;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #EEE; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: -30px;
+}
+
+/* Responsive tweaks */
+@media (min-width: 430px) {
+  .phone-frame { border-radius: 24px; height: 92vh; height: 92dvh; }
+}
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+
+  <!-- ========== HOME PAGE ========== -->
+  <div class="page active" id="page-home">
+    <!-- My Panel button -->
+    <button class="my-btn" id="my-btn" data-i18n-title="mySection">
+        <img src="Character Model/Blue-white/normal.png" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;border-radius:50%;">
+      </button>
+
+    <!-- My Panel overlay -->
+    <div class="my-overlay" id="my-overlay">
+      <div class="my-panel" id="my-panel">
+        <button class="my-close" id="my-close">✕</button>
+        <div class="my-tabs">
+          <button class="my-tab active" data-tab="wardrobe" data-i18n="wardrobe">衣橱柜</button>
+          <button class="my-tab" data-tab="bg" data-i18n="specialBg">特殊背景</button>
+        </div>
+        <div class="my-grid" id="my-grid"></div>
+      </div>
+    </div>
+
+    <div class="lang-bar">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ar">عربي</button>
+    </div>
+
+    <div class="home-title-area">
+      <div class="home-title" data-i18n="title">开心阿拉</div>
+      <div class="home-subtitle" data-i18n="subtitle">How are you feeling today?</div>
+    </div>
+
+    <div class="mode-grid">
+      <button class="mode-btn sad" data-mode="sad">
+        <span class="mode-emoji">😢</span>
+        <span class="mode-label-main" data-i18n="sad">伤心</span>
+        <span class="mode-label-sub" data-i18n="sadSub">Sad</span>
+      </button>
+      <button class="mode-btn happy" data-mode="happy">
+        <span class="mode-emoji">😊</span>
+        <span class="mode-label-main" data-i18n="happy">开心</span>
+        <span class="mode-label-sub" data-i18n="happySub">Happy</span>
+      </button>
+      <button class="mode-btn angry" data-mode="angry">
+        <span class="mode-emoji">😡</span>
+        <span class="mode-label-main" data-i18n="angry">生气</span>
+        <span class="mode-label-sub" data-i18n="angrySub">Angry</span>
+      </button>
+      <button class="mode-btn scared" data-mode="scared">
+        <span class="mode-emoji">😴</span>
+        <span class="mode-label-main" data-i18n="scared">害怕</span>
+        <span class="mode-label-sub" data-i18n="scaredSub">Scared</span>
+      </button>
+    </div>
+
+    <div class="home-char">
+      <img src="Character Model/Blue-white/normal.png" alt="Alaa">
+    </div>
+  </div>
+
+  <!-- ========== ANIMATION PAGE ========== -->
+  <div class="page" id="page-anim">
+    <div class="anim-scene">
+      <button class="back-btn" id="anim-back">✕</button>
+      <div class="anim-sky" id="anim-sky">
+        <!-- Characters -->
+        <div class="char-container" id="protagonist">
+          <img src="" alt="Alaa" id="protagonist-img">
+        </div>
+        <div class="char-container" id="companion">
+          <img src="" alt="Friend" id="companion-img">
+        </div>
+        <!-- Balloon -->
+        <div class="balloon" id="balloon"></div>
+        <!-- Text bubble -->
+        <div class="text-bubble" id="text-bubble"></div>
+      </div>
+      <div class="ground"></div>
+    </div>
+  </div>
+
+  <!-- ========== RESULT PAGE ========== -->
+  <div class="page" id="page-result">
+    <div class="lang-bar"></div>
+    <div class="result-content">
+      <div class="result-char">
+        <img src="Character Model/Blue-white/normal.png" alt="Alaa" id="result-img">
+      </div>
+      <div class="result-msg" data-i18n="happyEnd">Alaa 开心起来了！</div>
+      <div class="result-btns">
+        <button class="result-btn primary" id="btn-replay" data-i18n="replay">再来一次</button>
+        <button class="result-btn secondary" id="btn-home" data-i18n="back">返回首页</button>
+        <button class="result-btn secondary" id="btn-exit" data-i18n="exit">退出</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===========================================================================
+// i18n SYSTEM
+// ===========================================================================
+const I18N = {
+  zh: {
+    title: '开心阿拉',
+    subtitle: 'How are you feeling today?',
+    sad: '伤心', sadSub: 'Sad',
+    happy: '开心', happySub: 'Happy',
+    angry: '生气', angrySub: 'Angry',
+    scared: '劳累', scaredSub: 'Tired',
+    replay: '再来一次',
+    back: '返回首页',
+    exit: '退出',
+    exitConfirm: '确定要退出吗？',
+    happyEnd: 'Alaa 开心起来了！',
+    calmEnd: 'Alaa 平静下来了！',
+    sleepEnd: 'Alaa 睡着了~',
+    // Animation texts
+    happyAlaaHere: '开心版本的Alaa来了！',
+    heyWhySad: '嘿，怎么不开心？',
+    foundYou: '找到你啦！',
+    letsPlay: '一起来玩吧！',
+    bestFriendHere: 'Alaa最好的朋友Zo来了！',
+    soAngry: '气死我啦！！',
+    calmDown: '别生气嘛~',
+    dontBeScared: '累了就休息吧~',
+    balloon: '看这个！',
+    pop: '砰！',
+    haha: '哈哈！',
+    yay: '太棒了！',
+    sorry: '对不起嘛~',
+    itsOkay: '没事的~',
+    // My panel
+    mySection: '我的板块',
+    wardrobe: '衣橱柜',
+    specialBg: '特殊背景',
+    noItems: '暂无选项',
+    luluBalloons: '噜噜吹气球',
+    luluFriends: 'lulu去找朋友',
+    alaaWork: 'alaa去上班',
+    alaaPanda: 'alaa观赏大熊猫',
+  },
+  en: {
+    title: 'Happy Alaa',
+    subtitle: 'How are you feeling today?',
+    sad: 'Sad', sadSub: '',
+    happy: 'Happy', happySub: '',
+    angry: 'Angry', angrySub: '',
+    scared: 'Tired', scaredSub: '',
+    replay: 'Play Again',
+    back: 'Home',
+    exit: 'Exit',
+    exitConfirm: 'Are you sure you want to exit?',
+    happyEnd: 'Alaa is happy now!',
+    calmEnd: 'Alaa is calm now!',
+    sleepEnd: 'Alaa fell asleep~',
+    happyAlaaHere: 'The happy version of Alaa appears!',
+    heyWhySad: 'Hey, why so sad?',
+    foundYou: 'Found you!',
+    letsPlay: "Let's play together!",
+    bestFriendHere: "Alaa's best friend Zo is here!",
+    soAngry: "I'm so angry!!",
+    calmDown: "Don't be angry~",
+    dontBeScared: "Rest if you're tired~",
+    balloon: 'Look at this!',
+    pop: 'Pop!',
+    haha: 'Haha!',
+    yay: 'Yay!',
+    sorry: "I'm sorry~",
+    itsOkay: "It's okay~",
+    mySection: 'My Style',
+    wardrobe: 'Wardrobe',
+    specialBg: 'Background',
+    noItems: 'No items',
+    luluBalloons: 'lulu blows up balloons',
+    luluFriends: 'lulu goes to find friends',
+    alaaWork: 'alaa goes to work',
+    alaaPanda: 'alaa watches pandas',
+  },
+  ar: {
+    title: 'الاء السعيد',
+    subtitle: 'How are you feeling today?',
+    sad: 'حزين', sadSub: '',
+    happy: 'سعيد', happySub: '',
+    angry: 'غاضب', angrySub: '',
+    scared: 'متعب', scaredSub: '',
+    replay: 'مرة أخرى',
+    back: 'الرئيسية',
+    exit: 'خروج',
+    exitConfirm: 'هل أنت متأكد من الخروج؟',
+    happyEnd: 'الاء سعيد الآن!',
+    calmEnd: 'الاء هادئ الآن!',
+    sleepEnd: 'الاء نامت~',
+    happyAlaaHere: 'النسخة السعيدة من الاء تظهر!',
+    heyWhySad: 'لماذا أنت حزين؟',
+    foundYou: 'وجدتك!',
+    letsPlay: 'هيا نلعب معًا!',
+    bestFriendHere: 'أفضل صديق لـ Alaa زو هنا!',
+    soAngry: 'أنا غاضب جداً!!',
+    calmDown: 'لا تغضب~',
+    dontBeScared: 'استرح إذا كنت متعبًا~',
+    balloon: 'انظر إلى هذا!',
+    pop: 'بوم!',
+    haha: 'هاها!',
+    yay: 'رائع!',
+    sorry: 'آسف~',
+    itsOkay: 'لا بأس~',
+    mySection: 'قسمي',
+    wardrobe: 'خزانة الملابس',
+    specialBg: 'خلفية خاصة',
+    noItems: 'لا توجد خيارات',
+    luluBalloons: 'لولو نفخ البالونات',
+    luluFriends: 'لولو تذهب لتجد أصدقاء',
+    alaaWork: 'الاء تذهب إلى العمل',
+    alaaPanda: 'الاء تشاهد الباندا',
+  }
+};
+
+let currentLang = 'zh';
+const BLUE_PATH = 'Character Model/Blue-white/';
+const PINK_PATH = 'Character Model/Pink-white/';
+const BEST_PATH = 'Character Model/Best_friend/';
+
+// Preload all character images
+const ALL_SPRITES = [
+  'normal.png', 'sad.png', 'happy.png', 'happiness.png',
+  'big happines.png', 'angry.png', 'shock.png', 'good.png', 'back view.png'
+];
+function preloadImages() {
+  const paths = [];
+  ALL_SPRITES.forEach(s => {
+    paths.push(BLUE_PATH + s);
+    paths.push(PINK_PATH + s);
+  });
+  // Also preload Best friend images
+  paths.push(BEST_PATH + 'big happy.png');
+  paths.push(BEST_PATH + 'back view.png');
+  return Promise.all(paths.map(src => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = resolve;
+    img.onerror = resolve; // continue even if some fail
+    img.src = src;
+  })));
+}
+
+// ===========================================================================
+// ANIMATION ENGINE
+// ===========================================================================
+class AnimEngine {
+  constructor() {
+    this.protag = document.getElementById('protagonist');
+    this.protagImg = document.getElementById('protagonist-img');
+    this.comp = document.getElementById('companion');
+    this.compImg = document.getElementById('companion-img');
+    this.balloon = document.getElementById('balloon');
+    this.bubble = document.getElementById('text-bubble');
+    this.sky = document.getElementById('anim-sky');
+  }
+
+  // Set protagonist sprite
+  setProtag(sprite) {
+    this.protagImg.src = BLUE_PATH + sprite;
+  }
+
+  // Set companion sprite
+  setComp(sprite) {
+    this.compImg.src = (this.compPath || PINK_PATH) + sprite;
+  }
+
+  // Set custom path for companion sprites (e.g., Best friend)
+  setCompPath(path) {
+    this.compPath = path;
+  }
+
+  // Show text bubble. Set above=true for bubbles above characters (arrow points down)
+  showBubble(text, x, y, duration = 2000, above = false) {
+    return new Promise(resolve => {
+      this.bubble.textContent = text;
+      this.bubble.style.left = x + 'px';
+      this.bubble.style.top = y + 'px';
+      this.bubble.style.opacity = '1';
+      if (above) {
+        this.bubble.classList.add('above');
+      } else {
+        this.bubble.classList.remove('above');
+      }
+      setTimeout(() => {
+        this.bubble.style.opacity = '0';
+        this.bubble.classList.remove('above');
+        resolve();
+      }, duration);
+    });
+  }
+
+  // Walk in from side: 'left' or 'right' — uses rAF for reliable animation
+  walkIn(fromSide, toXPercent, duration = 800) {
+    return new Promise(resolve => {
+      const startX = fromSide === 'right' ? 130 : -30;
+      const targetX = toXPercent;
+      this.comp.classList.add('visible');
+      this.comp.style.opacity = '1';
+      this.comp.style.zIndex = '20';
+      this.comp.style.top = '12%';
+      this.comp.style.display = 'block';
+      this.comp.style.transition = 'none';
+      this.comp.style.left = startX + '%';
+      this.comp.offsetHeight;
+
+      const startTime = performance.now();
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        const p = Math.min(elapsed / duration, 1);
+        // ease-out
+        const eased = 1 - Math.pow(1 - p, 3);
+        const currentX = startX + (targetX - startX) * eased;
+        this.comp.style.left = currentX + '%';
+        if (p < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          this.comp.style.left = targetX + '%';
+          resolve();
+        }
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Walk out
+  walkOut(toSide, duration = 600) {
+    return new Promise(resolve => {
+      const endX = toSide === 'right' ? 130 : -30;
+      this.comp.style.transition = `left ${duration}ms ease-in-out`;
+      this.comp.style.left = endX + '%';
+      setTimeout(() => {
+        this.comp.classList.remove('visible');
+        resolve();
+      }, duration);
+    });
+  }
+
+  // Blink: rapid scaleY
+  blink(count = 2, interval = 200) {
+    return new Promise(resolve => {
+      let i = 0;
+      const doBlink = () => {
+        if (i >= count) { resolve(); return; }
+        // Close eyes
+        this.comp.style.transition = 'transform 80ms';
+        this.comp.style.transform = 'scaleY(0.85)';
+        setTimeout(() => {
+          this.comp.style.transform = 'scaleY(1)';
+          setTimeout(() => {
+            i++;
+            if (i < count) setTimeout(doBlink, interval);
+            else setTimeout(resolve, 200);
+          }, 80);
+        }, 80);
+      };
+      doBlink();
+    });
+  }
+
+  // Circle around protagonist
+  circle(rounds = 3, durationPerRound = 1200) {
+    return new Promise(resolve => {
+      const protagRect = this.protag.getBoundingClientRect();
+      const skyRect = this.sky.getBoundingClientRect();
+      const protagCenterX = protagRect.left + protagRect.width / 2 - skyRect.left;
+      const protagCenterY = protagRect.top + protagRect.height * 0.4 - skyRect.top;
+      const radiusX = protagRect.width * 1.3;
+      const radiusY = protagRect.height * 0.5;
+
+      const totalDuration = rounds * durationPerRound;
+      const startTime = performance.now();
+      let lastAngle = 0;
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / totalDuration, 1);
+        const angle = progress * rounds * Math.PI * 2;
+
+        const x = protagCenterX + Math.sin(angle) * radiusX;
+        const y = protagCenterY - Math.cos(angle) * radiusY * 0.6;
+
+        // Determine if behind protagonist (cos > 0 means behind)
+        const cosAngle = Math.cos(angle);
+        // Switch to back view when companion is behind protagonist
+        if (cosAngle > 0.3 && Math.cos(lastAngle) <= 0.3) {
+          this.compImg.src = PINK_PATH + 'back view.png';
+        } else if (cosAngle <= 0.3 && Math.cos(lastAngle) > 0.3) {
+          this.compImg.src = PINK_PATH + 'big happines.png';
+        }
+
+        lastAngle = angle;
+
+        this.comp.style.left = x + 'px';
+        this.comp.style.top = y + 'px';
+        this.comp.style.transition = 'none';
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Reset position to side of protagonist
+          this.comp.style.left = '28%';
+          this.comp.style.top = '';
+          this.comp.style.transform = '';
+          this.compImg.src = PINK_PATH + 'big happines.png';
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Character shake (for angry stomping)
+  shake(element, intensity = 4, duration = 500) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      const startTime = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        if (elapsed > duration) {
+          el.style.transform = el === this.protag ? 'translateX(-50%)' : '';
+          resolve();
+          return;
+        }
+        const x = Math.sin(elapsed * 0.05) * intensity * (1 - elapsed / duration);
+        const baseX = el === this.protag ? '-50%' : '0';
+        el.style.transform = `translateX(calc(${baseX} + ${x}px))`;
+        el.style.transition = 'none';
+        requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Vertical bounce (for happy mode)
+  bounce(element, height = 15, count = 3, durationPerBounce = 300) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      let i = 0;
+      const baseTransform = el === this.protag ? 'translateX(-50%)' : '';
+      const doBounce = () => {
+        if (i >= count) { el.style.transform = baseTransform; resolve(); return; }
+        const dir = i % 2 === 0 ? -1 : 1;
+        el.style.transition = `transform ${durationPerBounce/2}ms ease-out`;
+        el.style.transform = `${baseTransform} translateY(${dir * height}px)`;
+        setTimeout(() => {
+          el.style.transition = `transform ${durationPerBounce/2}ms ease-in`;
+          el.style.transform = baseTransform;
+          setTimeout(() => { i++; doBounce(); }, durationPerBounce / 2);
+        }, durationPerBounce / 2);
+      };
+      doBounce();
+    });
+  }
+
+  // Upper body shake (for scared mode)
+  upperShake(duration = 1500) {
+    return new Promise(resolve => {
+      const el = this.protag;
+      el.style.transformOrigin = 'bottom center';
+      el.style.transition = 'none';
+      const startTime = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        if (elapsed > duration) {
+          el.style.transform = 'translateX(-50%) rotate(0deg)';
+          el.style.transformOrigin = 'center center';
+          resolve();
+          return;
+        }
+        const intensity = 3 * (1 - elapsed / duration);
+        const rot = Math.sin(elapsed * 0.04) * intensity;
+        el.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+        requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Switch sprite with fade transition
+  switchSprite(target, newSprite, duration = 400) {
+    return new Promise(resolve => {
+      const img = target === 'protag' ? this.protagImg : this.compImg;
+      const path = target === 'protag' ? BLUE_PATH : (this.compPath || PINK_PATH);
+
+      img.style.transition = `opacity ${duration/2}ms`;
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = path + newSprite;
+        img.style.opacity = '1';
+        setTimeout(resolve, duration / 2);
+      }, duration / 2);
+    });
+  }
+
+  // Move element horizontally
+  moveToX(element, toXPercent, duration = 600) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      el.style.transition = `left ${duration}ms ease-in-out`;
+      if (element === 'protag') {
+        el.style.left = toXPercent + '%';
+        el.style.transform = 'translateX(-50%)';
+      } else {
+        el.style.left = toXPercent + '%';
+      }
+      setTimeout(resolve, duration);
+    });
+  }
+
+  // Scale balloon
+  scaleBalloon(scale, duration = 500) {
+    return new Promise(resolve => {
+      this.balloon.style.display = 'block';
+      this.balloon.style.transition = `transform ${duration}ms ease-out`;
+      this.balloon.style.transform = `scale(${scale})`;
+      setTimeout(resolve, duration);
+    });
+  }
+
+  // Show balloon
+  showBalloon(x, y) {
+    this.balloon.style.display = 'block';
+    this.balloon.style.left = x + 'px';
+    this.balloon.style.top = y + 'px';
+    this.balloon.style.transform = 'scale(0.3)';
+  }
+
+  hideBalloon() {
+    this.balloon.style.display = 'none';
+    this.balloon.style.transform = 'scale(1)';
+  }
+
+  // Particle burst (stars + hearts by default, or custom type)
+  particleBurst(x, y, count = 30, type = 'love') {
+    return new Promise(resolve => {
+      const emojis = type === 'burst'
+        ? ['💨', '💥', '💨', '💥', '💨', '💥', '💫', '🌀']
+        : ['⭐', '✨', '💖', '❤️', '💕', '🌟', '💝', '🎉'];
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.className = 'particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.fontSize = (18 + Math.random() * 22) + 'px';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 160;
+        const dist2 = 80 + Math.random() * 200;
+        p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--dy', Math.sin(angle) * dist - 40 + 'px');
+        p.style.setProperty('--dx2', Math.cos(angle) * dist2 + 'px');
+        p.style.setProperty('--dy2', Math.sin(angle) * dist2 - 80 + 'px');
+        p.style.animationDuration = (0.8 + Math.random() * 1.4) + 's';
+        fragment.appendChild(p);
+      }
+
+      this.sky.appendChild(fragment);
+
+      setTimeout(() => {
+        const particles = this.sky.querySelectorAll('.particle');
+        particles.forEach(p => p.remove());
+        resolve();
+      }, 1200);
+    });
+  }
+
+  // Reset positions
+  reset() {
+    this.compPath = null; // reset to default Pink-white
+    this.protag.style.transition = 'none';
+    this.protag.style.left = '50%';
+    this.protag.style.top = '';
+    this.protag.style.transform = 'translateX(-50%)';
+    this.protag.style.transformOrigin = 'center center';
+    this.protagImg.style.opacity = '1';
+    this.protagImg.style.transition = 'none';
+
+    this.comp.style.transition = 'none';
+    this.comp.style.left = '120%';
+    this.comp.style.top = '';
+    this.comp.style.transform = '';
+    this.comp.classList.remove('visible');
+    this.compImg.style.opacity = '1';
+    this.compImg.style.transition = 'none';
+    this.compImg.src = '';
+
+    this.hideBalloon();
+    this.bubble.style.opacity = '0';
+    this.bubble.classList.remove('above');
+
+    // Remove leftover particles
+    this.sky.querySelectorAll('.particle').forEach(p => p.remove());
+  }
+}
+
+// ===========================================================================
+// GAME CONTROLLER
+// ===========================================================================
+const app = document.getElementById('app');
+const pages = {
+  home: document.getElementById('page-home'),
+  anim: document.getElementById('page-anim'),
+  result: document.getElementById('page-result'),
+};
+const engine = new AnimEngine();
+let currentMode = '';
+
+function showPage(name) {
+  Object.values(pages).forEach(p => p.classList.remove('active'));
+  pages[name].classList.add('active');
+}
+
+// Language switching
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  // Update all i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[lang] && I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+  // RTL for Arabic
+  if (lang === 'ar') {
+    document.body.classList.add('rtl');
+    document.documentElement.dir = 'rtl';
+    document.documentElement.lang = 'ar';
+  } else {
+    document.body.classList.remove('rtl');
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  }
+}
+
+// Detect browser language
+const browserLang = navigator.language || '';
+const defaultLang = browserLang.startsWith('zh') ? 'zh'
+  : browserLang.startsWith('ar') ? 'ar'
+  : 'en';
+setLang(defaultLang);
+
+// Language button clicks
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+// ===========================================================================
+// MODE ANIMATIONS
+// ===========================================================================
+function t(key) { return I18N[currentLang][key] || key; }
+
+// Helper: get bottom-center position for text bubbles
+function bubblePos() {
+  const skyRect = engine.sky.getBoundingClientRect();
+  return {
+    x: skyRect.width / 2 - 70,
+    y: skyRect.height - 100
+  };
+}
+
+// Helper: get position above protagonist's head
+function bubbleAboveProtag() {
+  const pRect = engine.protag.getBoundingClientRect();
+  const skyRect = engine.sky.getBoundingClientRect();
+  return {
+    x: pRect.left - skyRect.left + 20,
+    y: pRect.top - skyRect.top - 30
+  };
+}
+
+async function playSadMode() {
+  engine.reset();
+  engine.setProtag('sad.png');
+  engine.setComp('big happines.png');
+  // Position protagonist center
+  engine.protag.style.left = '50%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '15%';
+
+  // Companion walks in from right (reduced initial wait)
+  await sleep(300);
+  await engine.walkIn('right', '25%', 700);
+
+  // Text bubble near companion: Happy Alaa is here!
+  const compRect = engine.comp.getBoundingClientRect();
+  const compSkyRect = engine.sky.getBoundingClientRect();
+  const compX = compRect.left - compSkyRect.left + compRect.width / 2 - 60;
+  const compY = compRect.top - compSkyRect.top - 10;
+  await engine.showBubble(t('happyAlaaHere'), compX, compY, 1200, true);
+  await sleep(400);
+  const bp = bubblePos();
+  await engine.showBubble(t('heyWhySad'), bp.x, bp.y, 1200);
+
+  // Blink twice
+  await engine.blink(2, 250);
+
+  // Wait a moment, protagonist still sad
+  await sleep(400);
+  await engine.showBubble('🤔', bp.x, bp.y, 1200);
+
+  // Circle around
+  await engine.circle(3, 1100);
+
+  // Balloon animation — offset from companion to avoid overlap
+  const cRect = engine.comp.getBoundingClientRect();
+  const skyR = engine.sky.getBoundingClientRect();
+  const cX = cRect.left - skyR.left + cRect.width + 15;
+  const cY = cRect.top - skyR.top + cRect.height * 0.15;
+  engine.showBalloon(cX, cY);
+
+  await engine.scaleBalloon(1.2, 400);
+
+  // Two possible outcomes
+  const willPop = Math.random() > 0.5;
+
+  if (willPop) {
+    // Balloon keeps inflating and pops
+    await engine.scaleBalloon(2.5, 700);
+    await sleep(100);
+    engine.hideBalloon();
+    // Particle burst!
+    await engine.particleBurst(cX, cY, 35);
+    engine.showBubble(t('pop'), bp.x, bp.y, 1000);
+  } else {
+    // Balloon deflates toward protagonist
+    await engine.scaleBalloon(1.5, 500);
+    // Move balloon toward protagonist
+    const pRect = engine.protag.getBoundingClientRect();
+    const pX = pRect.left - skyR.left;
+    const pY = pRect.top - skyR.top;
+    engine.balloon.style.transition = 'all 600ms ease-in-out';
+    engine.balloon.style.left = pX + 'px';
+    engine.balloon.style.top = pY + 'px';
+    engine.balloon.style.transform = 'scale(0.4) rotate(20deg)';
+    await sleep(700);
+    engine.hideBalloon();
+    await engine.particleBurst(pX + 40, pY + 20, 20);
+  }
+
+  // Protagonist becomes happy
+  await sleep(300);
+  await engine.switchSprite('protag', 'happiness.png', 500);
+
+  // Companion also shows happiness
+  engine.setComp('big happines.png');
+
+  // Both bounce together
+  await engine.bounce('protag', 12, 3, 300);
+  const yayPos = bubbleAboveProtag();
+  await Promise.all([
+    engine.showBubble(t('yay'), yayPos.x, yayPos.y, 1500, true),
+    sleep(1500),
+  ]);
+}
+
+async function playHappyMode() {
+  engine.reset();
+  engine.setProtag('happy.png');
+  engine.protag.style.left = '40%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+
+  // Protagonist bounces
+  await engine.bounce('protag', 14, 3, 280);
+
+  // "一起来玩吧" first
+  const bp2 = bubblePos();
+  await engine.showBubble(t('letsPlay'), bp2.x, bp2.y, 1000);
+  await sleep(100);
+
+  // Best friend slides in from left AFTER letsPlay
+  engine.compImg.src = 'Character Model/Best_friend/big happy.png';
+  engine.compPath = BEST_PATH;
+  engine.comp.classList.add('visible');
+  engine.comp.style.cssText = 'left:-30%; top:12%; z-index:99; opacity:1; display:block; transition:none;';
+  engine.comp.offsetHeight;
+  engine.comp.style.cssText = 'left:55%; top:12%; z-index:99; opacity:1; display:block; transition:left 700ms ease-out;';
+  await sleep(800);
+
+  // "bestFriendHere" after companion arrives
+  await engine.showBubble(t('bestFriendHere'), bp2.x, bp2.y, 1200);
+  await sleep(200);
+
+  // Both bounce together
+  await Promise.all([
+    engine.bounce('protag', 12, 2, 250),
+    engine.bounce('comp', 12, 2, 250),
+  ]);
+
+  // Move toward each other (high five position)
+  await engine.moveToX('protag', '35%', 400);
+  await engine.moveToX('comp', '50%', 400);
+
+  // Spin around each other
+  await Promise.all([
+    engine.bounce('protag', 16, 3, 280),
+    engine.bounce('comp', 16, 3, 280),
+  ]);
+
+  // Heart particles
+  const skyRect = engine.sky.getBoundingClientRect();
+  const midX = skyRect.width / 2;
+  const midY = skyRect.height / 2;
+  await engine.particleBurst(midX - 40, midY - 20, 25);
+
+  // Protagonist becomes big happy
+  await engine.switchSprite('protag', 'big happines.png', 400);
+  // Note: companion already shows big happy.png, no need to switch
+
+  await engine.showBubble(t('haha'), bp2.x, bp2.y, 1000);
+  await sleep(800);
+}
+
+async function playAngryMode() {
+  engine.reset();
+  engine.setProtag('angry.png');
+  engine.protag.style.left = '45%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+
+  // Stomping angrily
+  await engine.shake('protag', 5, 500);
+
+  // Create soccer ball
+  const ball = document.createElement('span');
+  ball.textContent = '⚽';
+  ball.style.cssText = 'position:absolute;font-size:40px;z-index:30;pointer-events:none;';
+  engine.sky.appendChild(ball);
+
+  const skyRect = engine.sky.getBoundingClientRect();
+  const ballSize = 40;
+  const maxX = skyRect.width - ballSize;
+  const maxY = skyRect.height - ballSize;
+
+  // Ball starts near protagonist's foot
+  const pRect = engine.protag.getBoundingClientRect();
+  let bx = pRect.left - skyRect.left + pRect.width * 0.3;
+  let by = pRect.top - skyRect.top + pRect.height * 0.75;
+  ball.style.left = bx + 'px';
+  ball.style.top = by + 'px';
+
+  await sleep(300);
+
+  // Kick! Ball launches
+  let vx = 8 + Math.random() * 6;
+  let vy = -(10 + Math.random() * 8);
+  let bounceCount = 0;
+  const maxBounces = 10;
+  let done = false;
+
+  await new Promise(resolve => {
+    const physics = () => {
+      if (done) { resolve(); return; }
+      bx += vx;
+      by += vy;
+      // Bounce off walls
+      if (bx <= 0) { bx = 0; vx = Math.abs(vx); bounceCount++; }
+      if (bx >= maxX) { bx = maxX; vx = -Math.abs(vx); bounceCount++; }
+      if (by <= 0) { by = 0; vy = Math.abs(vy); bounceCount++; }
+      if (by >= maxY) { by = maxY; vy = -Math.abs(vy); bounceCount++; }
+      // Friction
+      vx *= 0.998;
+      vy *= 0.998;
+      ball.style.left = bx + 'px';
+      ball.style.top = by + 'px';
+      if (bounceCount >= maxBounces) {
+        done = true;
+        const ballCX = bx + ballSize / 2;
+        const ballCY = by + ballSize / 2;
+        ball.remove();
+        engine.particleBurst(ballCX, ballCY, 25, 'burst').then(resolve);
+      } else {
+        requestAnimationFrame(physics);
+      }
+    };
+    requestAnimationFrame(physics);
+  });
+
+  // Alaa calms down after ball explodes
+  await sleep(300);
+  await engine.switchSprite('protag', 'normal.png', 500);
+
+  const bp3 = bubblePos();
+  await engine.showBubble(t('itsOkay'), bp3.x, bp3.y, 1000);
+  await sleep(1000);
+}
+
+async function playScaredMode() {
+  engine.reset();
+  engine.setProtag('sad.png');
+  engine.protag.style.left = '45%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+  engine.protag.style.transformOrigin = 'bottom center';
+
+  // Protagonist looks tired — slight droop
+  engine.protag.style.transition = 'transform 600ms ease-out';
+  engine.protag.style.transform = 'translateX(-50%) rotate(-5deg)';
+  await sleep(800);
+
+  // Companion (Pink-white normal) walks in from left
+  engine.setComp('normal.png');
+  await engine.walkIn('left', '30%', 800);
+
+  const bp4 = bubblePos();
+  await engine.showBubble(t('dontBeScared'), bp4.x, bp4.y, 1200);
+
+  // Companion approaches
+  await engine.moveToX('comp', '42%', 600);
+  await sleep(200);
+
+  // Companion helps protagonist to bed — lie down
+  await engine.moveToX('comp', '44%', 400);
+  await sleep(400);
+
+  // Protagonist lies down: rotate 90° and switch to back view
+  engine.protag.style.transition = 'transform 800ms ease-in-out, opacity 0.5s';
+  engine.protag.style.transform = 'translateX(-50%) rotate(90deg)';
+  await sleep(500);
+  await engine.switchSprite('protag', 'back view.png', 400);
+  // Keep rotated while showing back view
+  engine.protag.style.transform = 'translateX(-50%) rotate(90deg)';
+
+  await engine.showBubble(t('itsOkay'), bp4.x, bp4.y, 1000);
+
+  // Companion smiles
+  await engine.switchSprite('comp', 'good.png', 400);
+  await sleep(1500);
+}
+
+// ===========================================================================
+// NAVIGATION & EVENT HANDLERS
+// ===========================================================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+let animRunning = false;
+let animCancelled = false;
+
+async function startMode(mode) {
+  if (animRunning) return;
+  animRunning = true;
+  animCancelled = false;
+  currentMode = mode;
+  showPage('anim');
+
+  try {
+    switch (mode) {
+      case 'sad': await playSadMode(); break;
+      case 'happy': await playHappyMode(); break;
+      case 'angry': await playAngryMode(); break;
+      case 'scared': await playScaredMode(); break;
+    }
+  } catch (e) {
+    console.error('Animation error:', e);
+  }
+
+  animRunning = false;
+  // Only show result if animation wasn't cancelled
+  if (!animCancelled) {
+    showResult(mode);
+  }
+}
+
+function showResult(mode) {
+  const img = document.getElementById('result-img');
+  const msg = document.getElementById('result-msg');
+  // Set image before showing page to avoid flash
+  if (img) {
+    if (mode === 'angry') {
+      img.src = BLUE_PATH + 'normal.png';
+    } else if (mode === 'scared') {
+      img.src = BLUE_PATH + 'back view.png';
+    } else {
+      img.src = BLUE_PATH + 'happiness.png';
+    }
+  }
+  showPage('result');
+  if (!img || !msg) return;
+
+  if (mode === 'angry') {
+    msg.textContent = t('calmEnd');
+  } else if (mode === 'scared') {
+    msg.textContent = t('sleepEnd');
+  } else {
+    msg.textContent = t('happyEnd');
+  }
+
+  // Update replay/home/exit button text
+  const btnReplay = document.getElementById('btn-replay');
+  const btnHome = document.getElementById('btn-home');
+  const btnExit = document.getElementById('btn-exit');
+  if (btnReplay) btnReplay.textContent = t('replay');
+  if (btnHome) btnHome.textContent = t('back');
+  if (btnExit) btnExit.textContent = t('exit');
+}
+
+// Mode button clicks
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    if (mode) startMode(mode);
+  });
+});
+
+// Back button in animation
+document.getElementById('anim-back').addEventListener('click', () => {
+  animCancelled = true;
+  animRunning = false;
+  showPage('home');
+});
+
+// Result buttons
+document.getElementById('btn-replay').addEventListener('click', () => {
+  animRunning = false;
+  engine.reset();
+  startMode(currentMode);
+});
+document.getElementById('btn-home').addEventListener('click', () => {
+  animRunning = false;
+  showPage('home');
+});
+document.getElementById('btn-exit').addEventListener('click', () => {
+  if (confirm(t('exitConfirm') || '确定要退出吗？')) {
+    animRunning = false;
+    showPage('home');
+  }
+});
+
+// ===========================================================================
+// MY PANEL — Wardrobe & Special Background
+// ===========================================================================
+const CLOTHING_OPTIONS = [
+  { path: 'Character Model/Black-black/clothing.png', label: 'Black-Black', color: '黑黑' },
+  { path: 'Character Model/Black-white/clothing.png', label: 'Black-White', color: '黑白' },
+  { path: 'Character Model/Blue-white/clothing.png', label: 'Blue-White', color: '蓝白' },
+  { path: 'Character Model/Blue-white/clothing😡.png', label: 'Blue-White Angry', color: '蓝白😡' },
+  { path: 'Character Model/Brown-white/clothing.png', label: 'Brown-White', color: '棕白' },
+  { path: 'Character Model/Pink-white/clothing.png', label: 'Pink-White', color: '粉白' },
+];
+const BG_OPTIONS = [
+  { path: 'Character Model/Black-white/special background.png', label: 'Black-White BG', color: '黑白背景', i18nKey: 'alaaPanda' },
+  { path: 'Character Model/Blue-white/special background.png', label: 'Blue-White BG', color: '蓝白背景', i18nKey: 'luluFriends' },
+  { path: 'Character Model/Brown-white/special background.png', label: 'Brown-White BG', color: '棕白背景', i18nKey: 'luluBalloons' },
+  { path: 'Character Model/Pink-white/special background.png', label: 'Pink-White BG', color: '粉白背景', i18nKey: 'alaaWork' },
+];
+
+let currentClothing = null;    // selected clothing path
+let currentBackground = null;  // selected background path
+let activeTab = 'wardrobe';
+
+const homeCharImg = document.querySelector('.home-char img');
+const defaultHomeSrc = homeCharImg.src;
+
+function updateHomeCharacter() {
+  // Priority: special background > clothing > default
+  if (currentBackground) {
+    homeCharImg.src = currentBackground;
+  } else if (currentClothing) {
+    homeCharImg.src = currentClothing;
+  } else {
+    homeCharImg.src = defaultHomeSrc;
+  }
+}
+
+function renderMyGrid(tab) {
+  const grid = document.getElementById('my-grid');
+  const items = tab === 'wardrobe' ? CLOTHING_OPTIONS : BG_OPTIONS;
+  const selected = tab === 'wardrobe' ? currentClothing : currentBackground;
+
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'my-item';
+    if ((tab === 'wardrobe' && currentClothing === item.path) ||
+        (tab === 'bg' && currentBackground === item.path)) {
+      div.classList.add('selected');
+    }
+    let innerHTML = `<img src="${item.path}" alt="${item.label}" onerror="this.parentElement.style.opacity='0.3'">`;
+    if (item.i18nKey) {
+      innerHTML += `<span class="item-label">${t(item.i18nKey)}</span>`;
+    }
+    div.innerHTML = innerHTML;
+    div.addEventListener('click', () => {
+      if (tab === 'wardrobe') {
+        currentClothing = (currentClothing === item.path) ? null : item.path;
+      } else {
+        currentBackground = (currentBackground === item.path) ? null : item.path;
+      }
+      updateHomeCharacter();
+      renderMyGrid(tab);
+    });
+    grid.appendChild(div);
+  });
+
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">' + t('noItems') + '</p>';
+  }
+}
+
+// My Panel open/close
+document.getElementById('my-btn').addEventListener('click', () => {
+  document.getElementById('my-overlay').classList.add('open');
+  activeTab = 'wardrobe';
+  document.querySelectorAll('.my-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="wardrobe"]').classList.add('active');
+  renderMyGrid('wardrobe');
+});
+
+document.getElementById('my-close').addEventListener('click', () => {
+  document.getElementById('my-overlay').classList.remove('open');
+});
+document.getElementById('my-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('my-overlay').classList.remove('open');
+  }
+});
+
+// Tab switching
+document.querySelectorAll('.my-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.my-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    renderMyGrid(activeTab);
+  });
+});
+
+// Initialize
+async function init() {
+  console.log('🔄 Loading character sprites...');
+  await preloadImages();
+  console.log('🎮 Happy Alaa - Ready!');
+  console.log('   Modes: Sad | Happy | Angry | Scared');
+  console.log('   Languages: 中文 | English | العربية');
+
+  // Register PWA service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').then(() => {
+      console.log('📦 Service Worker registered — offline ready!');
+    }).catch(() => {
+      console.log('Service Worker registration skipped');
+    });
+  }
+}
+
+init();
+</script>
+</body>
+</html>
