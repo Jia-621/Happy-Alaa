@@ -1,0 +1,2626 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Happy Alaa">
+<link rel="manifest" href="manifest.json">
+<title>Happy Alaa - 开心阿拉</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FFF8E7;
+  --card-bg: #FFFFFF;
+  --text: #4A3728;
+  --accent: #FF6B6B;
+  --accent2: #4ECDC4;
+  --btn-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  --radius: 20px;
+  --font: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  font-family: var(--font);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.phone-frame {
+  width: 100vw;
+  max-width: 430px;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #FFF8E7 0%, #FFECD2 40%, #FFE4C4 100%);
+  box-shadow: 0 0 60px rgba(0,0,0,0.15);
+}
+
+/* ===== HOME PAGE ===== */
+.page { position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; }
+.page.active { display: flex; }
+
+/* Language bar */
+.lang-bar {
+  display: flex; gap: 6px; padding: 12px 16px; width: 100%;
+  justify-content: flex-end; z-index: 10;
+}
+.lang-btn {
+  border: 2px solid #E0D5C7; background: white; color: #8B7355;
+  padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; font-family: var(--font);
+}
+.lang-btn.active { background: #FF6B6B; color: white; border-color: #FF6B6B; }
+.lang-btn:active { transform: scale(0.95); }
+
+/* Title */
+.home-title-area { text-align: center; margin-top: 10px; z-index: 10; }
+.home-title { font-size: 32px; font-weight: 800; color: #4A3728; }
+.home-subtitle { font-size: 14px; color: #B0977A; margin-top: 2px; }
+
+/* Mode grid */
+.mode-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; padding: 12px 28px; width: 100%; max-width: 320px;
+  flex: 0 0 auto; z-index: 10; margin-top: 8px;
+}
+.mode-btn {
+  aspect-ratio: 1;
+  border-radius: var(--radius); border: none;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  box-shadow: var(--btn-shadow);
+  font-family: var(--font);
+}
+.mode-btn:active { transform: scale(0.94); }
+.mode-btn.sad    { background: linear-gradient(135deg, #A8D8EA, #C9E7F2); }
+.mode-btn.happy  { background: linear-gradient(135deg, #FFE66D, #FFF3A0); }
+.mode-btn.angry  { background: linear-gradient(135deg, #FF8A80, #FFB4B0); }
+.mode-btn.scared { background: linear-gradient(135deg, #5C6BC0, #9FA8DA); }
+
+.mode-emoji { font-size: 36px; margin-bottom: 2px; }
+.mode-label-main { font-size: 15px; font-weight: 700; color: #4A3728; }
+.mode-label-sub  { font-size: 10px; color: #6B5B4B; opacity: 0.7; margin-top: 1px; }
+
+/* Bottom character */
+.home-char {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  height: 38%; z-index: 5; pointer-events: none;
+}
+.home-char img { height: 100%; object-fit: contain; }
+
+/* ===== ANIMATION PAGE ===== */
+.anim-scene {
+  position: relative; width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, #FFF8E7 0%, #FFECD2 55%, #E8D5C0 100%);
+}
+.anim-sky { flex: 1; position: relative; overflow: hidden; }
+.ground {
+  height: 8%; background: linear-gradient(180deg, #D4C4A8, #C4B498);
+  position: relative; z-index: 2;
+}
+
+.back-btn {
+  position: absolute; top: 14px; left: 14px; z-index: 20;
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.85); font-size: 18px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Character containers in animation */
+.char-container {
+  position: absolute; bottom: 8%; z-index: 10;
+  transition: none;
+}
+.char-container img {
+  height: 100%; object-fit: contain; display: block;
+}
+#protagonist {
+  left: 50%; transform: translateX(-50%);
+  height: 45%;
+}
+#companion {
+  height: 42%;
+  left: 120%; /* offscreen */
+  transform: translateX(0);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#companion.visible { opacity: 1; }
+
+/* Balloon */
+.balloon {
+  position: absolute; width: 40px; height: 50px;
+  background: radial-gradient(circle at 35% 30%, #FF6B6B, #E55555);
+  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+  z-index: 15; transform-origin: bottom center;
+  display: none;
+}
+.balloon::after {
+  content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 14px; background: #888;
+}
+.balloon::before {
+  content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 10px solid #E55555;
+}
+
+/* Particles */
+.particle {
+  position: absolute; pointer-events: none; z-index: 25;
+  animation: particleFly 1.2s ease-out forwards;
+  font-size: 24px;
+}
+@keyframes particleFly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(0.3) rotate(0deg); }
+  50%  { opacity: 1; transform: translate(var(--dx), var(--dy)) scale(1.2) rotate(180deg); }
+  100% { opacity: 0; transform: translate(var(--dx2), var(--dy2)) scale(0.6) rotate(360deg); }
+}
+
+/* Text bubble */
+.text-bubble {
+  position: absolute; z-index: 20; background: white;
+  border-radius: 16px; padding: 8px 14px; font-size: 13px;
+  font-weight: 600; color: #4A3728; box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+  white-space: nowrap; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.text-bubble::after {
+  content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid white;
+}
+.text-bubble.above::after {
+  top: auto; bottom: -8px;
+  border-bottom: none;
+  border-top: 10px solid white;
+}
+
+/* ===== RESULT PAGE ===== */
+.result-content {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; flex: 1; gap: 12px;
+  width: 100%; overflow: hidden;
+}
+.result-char {
+  height: 35vh; max-height: 260px; min-height: 160px;
+  display: flex; align-items: center; justify-content: center;
+}
+.result-char img {
+  max-height: 100%; max-width: 100%; height: auto; width: auto;
+  object-fit: contain; object-position: center center;
+}
+.result-msg { font-size: 20px; font-weight: 700; color: #4A3728; text-align: center; }
+.result-btns {
+  display: flex; gap: 10px; margin-top: 6px;
+  flex-wrap: wrap; justify-content: center;
+}
+.result-btn {
+  padding: 10px 22px; border-radius: 30px; border: none;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); transition: transform 0.15s;
+  box-shadow: var(--btn-shadow); white-space: nowrap;
+  position: relative; z-index: 50;
+}
+.result-btn:active { transform: scale(0.95); }
+.result-btn.primary { background: #FF6B6B; color: white; }
+.result-btn.secondary { background: white; color: #4A3728; }
+
+/* RTL */
+body.rtl .lang-bar { flex-direction: row-reverse; }
+body.rtl .back-btn { left: auto; right: 14px; }
+body.rtl .text-bubble { direction: rtl; }
+body.rtl .my-panel { left: auto; right: 0; }
+
+/* ===== MY PANEL ===== */
+.my-btn {
+  position: absolute; top: 12px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.my-btn:active { transform: scale(0.9); }
+
+/* ===== COLLAPSIBLE SIDEBAR ===== */
+.sidebar-menu {
+  position: absolute; top: 58px; left: 12px; z-index: 29;
+  display: flex; flex-direction: column; gap: 6px;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease-out;
+}
+.sidebar-menu.open { opacity: 1; pointer-events: auto; }
+.sidebar-menu .sidebar-btn,
+.sidebar-menu .music-lib-btn,
+.sidebar-menu .princess-btn,
+.sidebar-menu .diary-btn,
+.sidebar-menu .account-btn {
+  position: static; width: 40px; height: 40px; min-width: 40px; min-height: 40px;
+  border-radius: 50%; border: none; flex-shrink: 0;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s; margin: 0;
+}
+.sidebar-menu .sidebar-btn:active,
+.sidebar-menu .music-lib-btn:active,
+.sidebar-menu .princess-btn:active { transform: scale(0.9); }
+.my-overlay {
+  position: absolute; inset: 0; z-index: 50;
+  background: rgba(0,0,0,0.4); display: none;
+  justify-content: flex-end; flex-direction: column;
+}
+.my-overlay.open { display: flex; }
+
+.my-panel {
+  background: white; border-radius: 24px 24px 0 0;
+  max-height: 65vh; overflow-y: auto; padding: 20px 16px 30px;
+  animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.my-tabs { display: flex; gap: 0; margin-bottom: 16px; border-radius: 12px; overflow: hidden; }
+.my-tab {
+  flex: 1; padding: 10px; border: none; background: #F0EBE3;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); color: #8B7355; transition: all 0.2s;
+}
+.my-tab.active { background: #FF6B6B; color: white; }
+
+.my-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.my-item {
+  aspect-ratio: 0.55; border-radius: 14px; overflow: hidden;
+  cursor: pointer; border: 3px solid transparent;
+  background: #F8F5F0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: border-color 0.2s; padding: 4px;
+}
+.my-item img { height: 78%; object-fit: contain; }
+.my-item .item-label { font-size: 10px; color: #8B7355; text-align: center; line-height: 1.3; padding-top: 2px; }
+.my-item.selected { border-color: #FF6B6B; }
+
+.my-close {
+  position: sticky; top: 0; float: right; z-index: 5;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #EEE; font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: -30px;
+}
+
+/* Responsive tweaks */
+@media (min-width: 430px) {
+  .phone-frame { border-radius: 24px; height: 92vh; height: 92dvh; }
+}
+
+/* ===== PRINCESS ALAA PANEL ===== */
+.princess-btn {
+  position: absolute; top: 104px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.princess-btn:active { transform: scale(0.9); }
+
+/* ===== DIARY BUTTON & PANEL ===== */
+.diary-btn {
+  position: absolute; top: 150px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.diary-btn:active { transform: scale(0.9); }
+
+.diary-overlay {
+  position: absolute; inset: 0; z-index: 55;
+  background: rgba(0,0,0,0.4); display: none;
+  justify-content: flex-end; flex-direction: column;
+}
+.diary-overlay.open { display: flex; }
+
+.diary-panel {
+  background: linear-gradient(180deg, #FFFDF7 0%, #FFF8E7 100%);
+  border-radius: 24px 24px 0 0;
+  max-height: 75vh; overflow-y: auto; padding: 20px 16px 30px;
+  animation: slideUp 0.3s ease-out;
+}
+.diary-panel-title {
+  text-align: center; font-size: 18px; font-weight: 800;
+  color: #4A3728; margin-bottom: 14px;
+}
+.diary-textarea {
+  width: 100%; min-height: 180px; border: 2px solid #E0D5C7;
+  border-radius: 14px; padding: 12px; font-size: 15px;
+  font-family: var(--font); resize: vertical; background: white;
+  color: #4A3728; outline: none;
+}
+.diary-textarea:focus { border-color: #FF6B6B; }
+.diary-btn-row { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
+.diary-btn-act {
+  padding: 8px 20px; border-radius: 20px; border: none;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); transition: transform 0.15s;
+}
+.diary-btn-act:active { transform: scale(0.95); }
+.diary-btn-save { background: #FF6B6B; color: white; }
+.diary-btn-cancel { background: #E0D5C7; color: #4A3728; }
+.diary-btn-del { background: #FF4444; color: white; }
+.diary-btn-new { display: block; margin: 0 auto 14px; padding: 8px 22px; border-radius: 20px; border: 2px dashed #E0D5C7; background: white; font-size: 15px; font-weight: 600; cursor: pointer; font-family: var(--font); color: #8B7355; }
+.diary-entry { padding: 12px 14px; border-radius: 14px; border: 2px solid #E0D5C7; background: white; cursor: pointer; margin-bottom: 8px; transition: all 0.2s; }
+.diary-entry:active { background: #FFF0E0; }
+.diary-entry-date { font-size: 12px; color: #B0977A; margin-bottom: 4px; }
+.diary-entry-preview { font-size: 14px; color: #4A3728; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.diary-full { white-space: pre-wrap; font-size: 15px; color: #4A3728; line-height: 1.6; padding: 8px 0; }
+
+.princess-overlay {
+  position: absolute; inset: 0; z-index: 55;
+  background: rgba(0,0,0,0.4); display: none;
+  justify-content: flex-end; flex-direction: column;
+}
+.princess-overlay.open { display: flex; }
+
+.princess-panel {
+  background: linear-gradient(180deg, #FFF5F8 0%, #FFE4EC 100%);
+  border-radius: 24px 24px 0 0;
+  max-height: 70vh; overflow-y: auto; padding: 20px 16px 30px;
+  animation: slideUp 0.3s ease-out;
+}
+.princess-panel-title {
+  text-align: center; font-size: 18px; font-weight: 800;
+  color: #D63384; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+.princess-tabs {
+  display: flex; gap: 6px; margin-bottom: 14px;
+  flex-wrap: wrap; justify-content: center;
+}
+.princess-tab {
+  padding: 6px 14px; border-radius: 14px; border: 2px solid #F8D0E0;
+  background: white; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font); color: #D63384;
+  transition: all 0.2s;
+}
+.princess-tab.active { background: #FF69B4; color: white; border-color: #FF69B4; }
+
+.princess-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.princess-grid.empty::after {
+  content: '📸 即将导入照片...';
+  grid-column: 1 / -1; text-align: center;
+  color: #C090A0; padding: 50px 20px;
+  font-size: 14px;
+}
+.princess-img-card {
+  aspect-ratio: 0.85; border-radius: 14px; overflow: hidden;
+  cursor: pointer; border: 2px solid #F8D0E0;
+  background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.princess-img-card:active { transform: scale(0.95); }
+.princess-img-card img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.princess-img-card .placeholder {
+  font-size: 36px; color: #E8C0D0;
+}
+
+/* ===== LIGHTBOX ===== */
+.lightbox {
+  position: absolute; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.92); display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  touch-action: none;
+}
+.lightbox.open { display: flex; }
+
+.lightbox-close {
+  position: absolute; top: 16px; right: 16px; z-index: 105;
+  width: 38px; height: 38px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.2); color: white; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.lightbox-hint {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.6); font-size: 12px; z-index: 105;
+  pointer-events: none;
+}
+.lightbox-img-wrap {
+  width: 100%; height: 100%; display: flex;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.lightbox-img-wrap img {
+  max-width: 95%; max-height: 85vh;
+  object-fit: contain; transition: none;
+  user-select: none; -webkit-user-drag: none;
+}
+
+
+
+
+
+.music-lib-btn {
+  position: absolute; top: 58px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 20px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.music-lib-btn:active { transform: scale(0.9); }
+.music-sidebar{position:absolute;inset:0;z-index:55;background:rgba(0,0,0,0.4);display:none;justify-content:flex-start;flex-direction:row;}
+.music-sidebar.open{display:flex;}
+.music-sidebar-inner{width:280px;max-width:85vw;height:100%;background:white;overflow-y:auto;padding:20px 14px 30px;animation:slideLeft 0.3s ease-out;box-shadow:2px 0 20px rgba(0,0,0,0.15);}
+@keyframes slideLeft{from{transform:translateX(-100%);}to{transform:translateX(0);}}
+body.rtl .music-sidebar{justify-content:flex-end;}
+body.rtl .music-sidebar-inner{animation:slideRight 0.3s ease-out;}
+@keyframes slideRight{from{transform:translateX(100%);}to{transform:translateX(0);}}
+.song-item{padding:10px 14px;border-radius:12px;border:2px solid #E0D5C7;background:#F8F5F0;cursor:pointer;text-align:left;font-family:var(--font);transition:all 0.2s;font-size:13px;color:#4A3728;}
+.song-item.playing{background:#FF6B6B;color:white;border-color:#FF6B6B;}
+.song-item.paused{background:#FFB347;color:white;border-color:#FFB347;}
+.song-item .st{font-weight:700;}.song-item .sh{font-size:10px;color:#999;}
+.song-item.playing .sh{color:rgba(255,255,255,0.7);}
+.vol-btn{width:26px;height:26px;border-radius:50%;border:1px solid #D0C8BB;background:#F5F0EB;color:#8B7355;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);padding:0;line-height:26px;text-align:center;}
+.vol-btn.active{background:#FF6B6B;color:white;border-color:#FF6B6B;}
+.vol-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:220px;margin:0 auto 8px;justify-items:center;}
+.mute-btn{display:block;margin:0 auto 12px;padding:5px 18px;border-radius:14px;border:1px solid #D0C8BB;background:#F5F0EB;color:#8B7355;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);}
+.mute-btn.muted{background:#FF6B6B;color:white;border-color:#FF6B6B;}
+/* ===== ACCOUNT BUTTON & AUTH PANEL ===== */
+.account-btn {
+  position: absolute; top: 196px; left: 12px; z-index: 30;
+  width: 40px; height: 40px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.9); font-size: 18px;
+  cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s;
+}
+.account-btn:active { transform: scale(0.9); }
+.account-btn.logged-in { background: #4ECDC4; color: white; }
+.auth-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  background: rgba(0,0,0,0.5); display: none;
+  align-items: center; justify-content: center;
+}
+.auth-overlay.open { display: flex; }
+.auth-panel {
+  background: white; border-radius: 20px; padding: 24px 20px;
+  width: 300px; max-width: 90vw; animation: slideUp 0.3s ease-out;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+.auth-tabs { display: flex; gap: 0; margin-bottom: 16px; border-radius: 12px; overflow: hidden; }
+.auth-tab {
+  flex: 1; padding: 10px; border: none; background: #F0EBE3;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font); color: #8B7355; transition: all 0.2s;
+}
+.auth-tab.active { background: #FF6B6B; color: white; }
+.auth-input {
+  width: 100%; padding: 12px; margin-bottom: 10px; border: 2px solid #E0D5C7;
+  border-radius: 12px; font-size: 15px; font-family: var(--font);
+  color: #4A3728; outline: none; background: #FAFAFA;
+}
+.auth-input:focus { border-color: #FF6B6B; }
+.auth-submit {
+  width: 100%; padding: 12px; border: none; border-radius: 12px;
+  background: #FF6B6B; color: white; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); margin-top: 4px;
+}
+.auth-submit:active { transform: scale(0.97); }
+.auth-error { color: #FF4444; font-size: 13px; text-align: center; margin-top: 8px; min-height: 18px; }
+.auth-user-info { text-align: center; }
+.auth-user-email { font-size: 14px; color: #8B7355; margin-bottom: 14px; word-break: break-all; }
+.auth-logout {
+  padding: 8px 24px; border-radius: 20px; border: none;
+  background: #FF6B6B; color: white; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--font);
+}
+/* ===== LOADING SCREEN ===== */
+.loading-screen {
+  position: absolute; inset: 0; z-index: 200;
+  background: linear-gradient(180deg, #FFF8E7 0%, #FFECD2 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.5s ease-out;
+}
+.loading-screen.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner {
+  width: 60px; height: 60px; border: 5px solid #E0D5C7;
+  border-top-color: #FF6B6B; border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 16px; font-weight: 700; color: #4A3728; }
+.loading-progress { font-size: 12px; color: #B0977A; margin-top: 6px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+
+  <!-- Loading screen -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Happy Alaa</div>
+    <div class="loading-progress" id="loading-progress">加载中...</div>
+  </div>
+
+  <!-- Hidden file input for avatar -->
+  <input type="file" id="avatar-input" accept="image/*" style="display:none;">
+
+  <!-- Left sidebar (collapsible) -->
+  <button class="my-btn sidebar-toggle" id="my-btn" data-i18n-title="mySection">
+    <img src="Character Model/Blue-white/normal.png" id="avatar-img" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;border-radius:50%;">
+  </button>
+  <div class="sidebar-menu" id="sidebar-menu">
+    <button class="princess-btn sidebar-btn" id="princess-btn" title="公主Alaa">👑</button>
+    <button class="sidebar-btn" id="wardrobe-btn" title="衣橱柜">👗</button>
+    <button class="music-lib-btn sidebar-btn" id="music-lib-btn">🎵</button>
+    <button class="diary-btn sidebar-btn" id="diary-btn" title="日记">📝</button>
+    <button class="account-btn sidebar-btn" id="account-btn" title="账号">🔑</button>
+  </div>
+
+
+  <!-- Auth overlay -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-panel" id="auth-panel"></div>
+  </div>
+
+  <!-- Diary overlay -->
+  <div class="diary-overlay" id="diary-overlay">
+    <div class="diary-panel" id="diary-panel">
+      <button class="my-close" id="diary-close">✕</button>
+      <div class="diary-panel-title" data-i18n="diary">📝 日记</div>
+      <div id="diary-content"></div>
+    </div>
+  </div>
+
+  <!-- Music Library sidebar -->
+  <div class="music-sidebar" id="music-overlay">
+    <div class="music-sidebar-inner">
+      <button class="my-close" id="music-close">✕</button>
+      <h3 style="text-align:center;margin-bottom:10px;color:#4A3728;">🎵 音乐库</h3>
+      <div id="song-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+      <p style="font-size:11px;color:#999;margin:12px 0 4px;">Music Volume</p>
+      <div class="vol-grid" id="music-vol-bar"></div>
+      <button class="mute-btn" id="music-mute-btn">🔊 静音</button>
+      <p style="font-size:11px;color:#999;margin:12px 0 4px;">Action SFX</p>
+      <div class="vol-grid" id="sfx-vol-bar"></div>
+      <button class="mute-btn" id="sfx-mute-btn">🔊 静音</button>
+    </div>
+  </div>
+
+  <!-- My Panel overlay -->
+  <div class="my-overlay" id="my-overlay">
+    <div class="my-panel" id="my-panel">
+      <button class="my-close" id="my-close">✕</button>
+      <div class="my-tabs">
+        <button class="my-tab active" data-tab="wardrobe" data-i18n="wardrobe">衣橱柜</button>
+        <button class="my-tab" data-tab="bg" data-i18n="specialBg">特殊背景</button>
+      </div>
+      <div class="my-grid" id="my-grid"></div>
+    </div>
+  </div>
+
+  <!-- Princess Alaa overlay -->
+  <div class="princess-overlay" id="princess-overlay">
+    <div class="princess-panel" id="princess-panel">
+      <button class="my-close" id="princess-close">✕</button>
+      <div class="princess-panel-title">👑 <span data-i18n="princessAlaa">公主Alaa</span> 👑</div>
+      <div class="princess-tabs" id="princess-tabs"></div>
+      <div class="princess-grid empty" id="princess-grid"></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close">✕</button>
+    <div class="lightbox-img-wrap" id="lightbox-img-wrap">
+      <img src="" alt="Princess Alaa" id="lightbox-img">
+    </div>
+    <div class="lightbox-hint" data-i18n="pinchZoom">双指缩放查看</div>
+  </div>
+
+  <!-- ========== HOME PAGE ========== -->
+  <div class="page active" id="page-home">
+
+    <div class="lang-bar">
+      <button class="lang-btn" data-lang="zh">中</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ar">عربي</button>
+    </div>
+
+    <div class="home-title-area">
+      <div class="home-title" data-i18n="title">开心阿拉</div>
+      <div class="home-subtitle" data-i18n="subtitle">How are you feeling today?</div>
+    </div>
+
+    <div class="mode-grid">
+      <button class="mode-btn sad" data-mode="sad">
+        <span class="mode-emoji">😢</span>
+        <span class="mode-label-main" data-i18n="sad">伤心</span>
+        <span class="mode-label-sub" data-i18n="sadSub">Sad</span>
+      </button>
+      <button class="mode-btn happy" data-mode="happy">
+        <span class="mode-emoji">😊</span>
+        <span class="mode-label-main" data-i18n="happy">开心</span>
+        <span class="mode-label-sub" data-i18n="happySub">Happy</span>
+      </button>
+      <button class="mode-btn angry" data-mode="angry">
+        <span class="mode-emoji">😡</span>
+        <span class="mode-label-main" data-i18n="angry">生气</span>
+        <span class="mode-label-sub" data-i18n="angrySub">Angry</span>
+      </button>
+      <button class="mode-btn scared" data-mode="scared">
+        <span class="mode-emoji">😴</span>
+        <span class="mode-label-main" data-i18n="scared">害怕</span>
+        <span class="mode-label-sub" data-i18n="scaredSub">Scared</span>
+      </button>
+    </div>
+
+    <div class="home-char">
+      <img src="Character Model/Blue-white/normal.png" alt="Alaa">
+    </div>
+  </div>
+
+  <!-- ========== ANIMATION PAGE ========== -->
+  <div class="page" id="page-anim">
+    <div class="anim-scene">
+      <button class="back-btn" id="anim-back">✕</button>
+      <div class="anim-sky" id="anim-sky">
+        <!-- Characters -->
+        <div class="char-container" id="protagonist">
+          <img src="" alt="Alaa" id="protagonist-img">
+        </div>
+        <div class="char-container" id="companion">
+          <img src="" alt="Friend" id="companion-img">
+        </div>
+        <!-- Balloon -->
+        <div class="balloon" id="balloon"></div>
+        <!-- Text bubble -->
+        <div class="text-bubble" id="text-bubble"></div>
+      </div>
+      <div class="ground"></div>
+    </div>
+  </div>
+
+  <!-- ========== RESULT PAGE ========== -->
+  <div class="page" id="page-result">
+    <div class="lang-bar"></div>
+    <div class="result-content">
+      <div class="result-char">
+        <img src="Character Model/Blue-white/normal.png" alt="Alaa" id="result-img">
+      </div>
+      <div class="result-msg" data-i18n="happyEnd">Alaa 开心起来了！</div>
+      <div class="result-btns">
+        <button class="result-btn primary" id="btn-replay" data-i18n="replay">再来一次</button>
+        <button class="result-btn secondary" id="btn-home" data-i18n="back">返回首页</button>
+        <button class="result-btn secondary" id="btn-exit" data-i18n="exit">退出</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===========================================================================
+// i18n SYSTEM
+// ===========================================================================
+const I18N = {
+  zh: {
+    title: '开心阿拉',
+    subtitle: 'How are you feeling today?',
+    sad: '伤心', sadSub: 'Sad',
+    happy: '开心', happySub: 'Happy',
+    angry: '生气', angrySub: 'Angry',
+    scared: '劳累', scaredSub: 'Tired',
+    replay: '再来一次',
+    back: '返回首页',
+    exit: '退出',
+    exitConfirm: '确定要退出吗？',
+    happyEnd: 'Alaa 开心起来了！',
+    calmEnd: 'Alaa 平静下来了！',
+    sleepEnd: 'Alaa 睡着了~',
+    // Animation texts
+    happyAlaaHere: '开心版本的Alaa来了！',
+    heyWhySad: '嘿，怎么不开心？',
+    foundYou: '找到你啦！',
+    letsPlay: '一起来玩吧！',
+    bestFriendHere: 'Alaa最好的朋友Zo来了！',
+    soAngry: '气死我啦！！',
+    calmDown: '别生气嘛~',
+    dontBeScared: '累了就休息吧~',
+    balloon: '看这个！',
+    pop: '砰！',
+    haha: '哈哈！',
+    yay: '太棒了！',
+    sorry: '对不起嘛~',
+    itsOkay: '没事的~',
+    // My panel
+    mySection: '我的板块',
+    wardrobe: '衣橱柜',
+    specialBg: '特殊背景',
+    noItems: '暂无选项',
+    luluBalloons: '噜噜吹气球',
+    luluFriends: 'lulu去找朋友',
+    alaaWork: 'alaa去上班',
+    alaaPanda: 'alaa观赏大熊猫',
+    princessAlaa: '公主Alaa',
+    pinchZoom: '双指缩放查看',
+    noPrincessPhotos: '暂无照片，请导入图片到 Princess Alaa 文件夹',
+    bunAlaa: '丸子头Alaa',
+    diary: '📝 日记',
+    newDiary: '+ 写日记',
+    diarySave: '保存',
+    diaryCancel: '取消',
+    diaryDelete: '删除',
+    diaryPlaceholder: '今天想写点什么...',
+    diaryNoEntries: '还没有日记，开始写第一篇吧！',
+    diaryConfirmDelete: '确定要删除这篇日记吗？',
+    diaryBack: '← 返回列表',
+    longAlaa: '龙Alaa',
+  },
+  en: {
+    title: 'Happy Alaa',
+    subtitle: 'How are you feeling today?',
+    sad: 'Sad', sadSub: '',
+    happy: 'Happy', happySub: '',
+    angry: 'Angry', angrySub: '',
+    scared: 'Tired', scaredSub: '',
+    replay: 'Play Again',
+    back: 'Home',
+    exit: 'Exit',
+    exitConfirm: 'Are you sure you want to exit?',
+    happyEnd: 'Alaa is happy now!',
+    calmEnd: 'Alaa is calm now!',
+    sleepEnd: 'Alaa fell asleep~',
+    happyAlaaHere: 'The happy version of Alaa appears!',
+    heyWhySad: 'Hey, why so sad?',
+    foundYou: 'Found you!',
+    letsPlay: "Let's play together!",
+    bestFriendHere: "Alaa's best friend Zo is here!",
+    soAngry: "I'm so angry!!",
+    calmDown: "Don't be angry~",
+    dontBeScared: "Rest if you're tired~",
+    balloon: 'Look at this!',
+    pop: 'Pop!',
+    haha: 'Haha!',
+    yay: 'Yay!',
+    sorry: "I'm sorry~",
+    itsOkay: "It's okay~",
+    mySection: 'My Style',
+    wardrobe: 'Wardrobe',
+    specialBg: 'Background',
+    noItems: 'No items',
+    luluBalloons: 'lulu blows up balloons',
+    luluFriends: 'lulu goes to find friends',
+    alaaWork: 'alaa goes to work',
+    alaaPanda: 'alaa watches pandas',
+    princessAlaa: 'Princess Alaa',
+    pinchZoom: 'Pinch to zoom',
+    noPrincessPhotos: 'No photos yet. Add images to the Princess Alaa folder.',
+    bunAlaa: 'Bun Alaa',
+    diary: '📝 Diary',
+    newDiary: '+ New Entry',
+    diarySave: 'Save',
+    diaryCancel: 'Cancel',
+    diaryDelete: 'Delete',
+    diaryPlaceholder: 'What happened today...',
+    diaryNoEntries: 'No entries yet. Write your first one!',
+    diaryConfirmDelete: 'Are you sure you want to delete this entry?',
+    diaryBack: '← Back',
+    longAlaa: 'Dragon Alaa',
+  },
+  ar: {
+    title: 'الاء السعيد',
+    subtitle: 'How are you feeling today?',
+    sad: 'حزين', sadSub: '',
+    happy: 'سعيد', happySub: '',
+    angry: 'غاضب', angrySub: '',
+    scared: 'متعب', scaredSub: '',
+    replay: 'مرة أخرى',
+    back: 'الرئيسية',
+    exit: 'خروج',
+    exitConfirm: 'هل أنت متأكد من الخروج؟',
+    happyEnd: 'الاء سعيد الآن!',
+    calmEnd: 'الاء هادئ الآن!',
+    sleepEnd: 'الاء نامت~',
+    happyAlaaHere: 'النسخة السعيدة من الاء تظهر!',
+    heyWhySad: 'لماذا أنت حزين؟',
+    foundYou: 'وجدتك!',
+    letsPlay: 'هيا نلعب معًا!',
+    bestFriendHere: 'أفضل صديق لـ Alaa زو هنا!',
+    soAngry: 'أنا غاضب جداً!!',
+    calmDown: 'لا تغضب~',
+    dontBeScared: 'استرح إذا كنت متعبًا~',
+    balloon: 'انظر إلى هذا!',
+    pop: 'بوم!',
+    haha: 'هاها!',
+    yay: 'رائع!',
+    sorry: 'آسف~',
+    itsOkay: 'لا بأس~',
+    mySection: 'قسمي',
+    wardrobe: 'خزانة الملابس',
+    specialBg: 'خلفية خاصة',
+    noItems: 'لا توجد خيارات',
+    luluBalloons: 'لولو نفخ البالونات',
+    luluFriends: 'لولو تذهب لتجد أصدقاء',
+    alaaWork: 'الاء تذهب إلى العمل',
+    alaaPanda: 'الاء تشاهد الباندا',
+    princessAlaa: 'الأميرة الاء',
+    pinchZoom: 'اضغط للتكبير',
+    noPrincessPhotos: 'لا توجد صور بعد. أضف صورًا إلى مجلد Princess Alaa.',
+    bunAlaa: 'كعكة الاء',
+    diary: '📝 مذكرات',
+    newDiary: '+ إدخال جديد',
+    diarySave: 'حفظ',
+    diaryCancel: 'إلغاء',
+    diaryDelete: 'حذف',
+    diaryPlaceholder: 'ماذا حدث اليوم...',
+    diaryNoEntries: 'لا توجد إدخالات بعد. اكتب أول واحدة!',
+    diaryConfirmDelete: 'هل أنت متأكد من حذف هذا الإدخال؟',
+    diaryBack: '← رجوع',
+    longAlaa: 'تنين الاء',
+  }
+};
+
+let currentLang = 'zh';
+const BLUE_PATH = 'Character Model/Blue-white/';
+const PINK_PATH = 'Character Model/Pink-white/';
+const BEST_PATH = 'Character Model/Best_friend/';
+
+// Preload all character images
+const ALL_SPRITES = [
+  'normal.png', 'sad.png', 'happy.png', 'happiness.png',
+  'big happines.png', 'angry.png', 'shock.png', 'good.png', 'back view.png'
+];
+function preloadImages() {
+  const paths = [];
+  ALL_SPRITES.forEach(s => {
+    paths.push(BLUE_PATH + s);
+    paths.push(PINK_PATH + s);
+  });
+  paths.push(BEST_PATH + 'big happy.png');
+  paths.push(BEST_PATH + 'back view.png');
+  let loaded = 0;
+  const total = paths.length;
+  const progress = document.getElementById('loading-progress');
+  return Promise.all(paths.map(src => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      loaded++;
+      if (progress) progress.textContent = '加载中 ' + loaded + '/' + total;
+      resolve();
+    };
+    img.onerror = () => {
+      loaded++;
+      resolve();
+    };
+    img.src = src;
+  })));
+}
+
+// ===========================================================================
+// ANIMATION ENGINE
+// ===========================================================================
+class AnimEngine {
+  constructor() {
+    this.protag = document.getElementById('protagonist');
+    this.protagImg = document.getElementById('protagonist-img');
+    this.comp = document.getElementById('companion');
+    this.compImg = document.getElementById('companion-img');
+    this.balloon = document.getElementById('balloon');
+    this.bubble = document.getElementById('text-bubble');
+    this.sky = document.getElementById('anim-sky');
+  }
+
+  // Set protagonist sprite
+  setProtag(sprite) {
+    this.protagImg.src = BLUE_PATH + sprite;
+  }
+
+  // Set companion sprite
+  setComp(sprite) {
+    this.compImg.src = (this.compPath || PINK_PATH) + sprite;
+  }
+
+  // Set custom path for companion sprites (e.g., Best friend)
+  setCompPath(path) {
+    this.compPath = path;
+  }
+
+  // Show text bubble. Set above=true for bubbles above characters (arrow points down)
+  showBubble(text, x, y, duration = 2000, above = false) {
+    return new Promise(resolve => {
+      this.bubble.textContent = text;
+      this.bubble.style.left = x + 'px';
+      this.bubble.style.top = y + 'px';
+      this.bubble.style.opacity = '1';
+      if (above) {
+        this.bubble.classList.add('above');
+      } else {
+        this.bubble.classList.remove('above');
+      }
+      setTimeout(() => {
+        this.bubble.style.opacity = '0';
+        this.bubble.classList.remove('above');
+        resolve();
+      }, duration);
+    });
+  }
+
+  // Walk in from side: 'left' or 'right' — uses rAF for reliable animation
+  walkIn(fromSide, toXPercent, duration = 800) {
+    return new Promise(resolve => {
+      const startX = fromSide === 'right' ? 130 : -30;
+      const targetX = toXPercent;
+      this.comp.classList.add('visible');
+      this.comp.style.opacity = '1';
+      this.comp.style.zIndex = '20';
+      this.comp.style.top = '12%';
+      this.comp.style.display = 'block';
+      this.comp.style.transition = 'none';
+      this.comp.style.left = startX + '%';
+      this.comp.offsetHeight;
+
+      const startTime = performance.now();
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        const p = Math.min(elapsed / duration, 1);
+        // ease-out
+        const eased = 1 - Math.pow(1 - p, 3);
+        const currentX = startX + (targetX - startX) * eased;
+        this.comp.style.left = currentX + '%';
+        if (p < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          this.comp.style.left = targetX + '%';
+          resolve();
+        }
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Walk out
+  walkOut(toSide, duration = 600) {
+    return new Promise(resolve => {
+      const endX = toSide === 'right' ? 130 : -30;
+      this.comp.style.transition = `left ${duration}ms ease-in-out`;
+      this.comp.style.left = endX + '%';
+      setTimeout(() => {
+        this.comp.classList.remove('visible');
+        resolve();
+      }, duration);
+    });
+  }
+
+  // Blink: rapid scaleY
+  blink(count = 2, interval = 200) {
+    return new Promise(resolve => {
+      let i = 0;
+      const doBlink = () => {
+        if (i >= count) { resolve(); return; }
+        // Close eyes
+        this.comp.style.transition = 'transform 80ms';
+        this.comp.style.transform = 'scaleY(0.85)';
+        setTimeout(() => {
+          this.comp.style.transform = 'scaleY(1)';
+          setTimeout(() => {
+            i++;
+            if (i < count) setTimeout(doBlink, interval);
+            else setTimeout(resolve, 200);
+          }, 80);
+        }, 80);
+      };
+      doBlink();
+    });
+  }
+
+  // Circle around protagonist
+  circle(rounds = 3, durationPerRound = 1200) {
+    return new Promise(resolve => {
+      const protagRect = this.protag.getBoundingClientRect();
+      const skyRect = this.sky.getBoundingClientRect();
+      const protagCenterX = protagRect.left + protagRect.width / 2 - skyRect.left;
+      const protagCenterY = protagRect.top + protagRect.height * 0.4 - skyRect.top;
+      const radiusX = protagRect.width * 1.3;
+      const radiusY = protagRect.height * 0.5;
+
+      const totalDuration = rounds * durationPerRound;
+      const startTime = performance.now();
+      let lastAngle = 0;
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / totalDuration, 1);
+        const angle = progress * rounds * Math.PI * 2;
+
+        const x = protagCenterX + Math.sin(angle) * radiusX;
+        const y = protagCenterY - Math.cos(angle) * radiusY * 0.6;
+
+        // Determine if behind protagonist (cos > 0 means behind)
+        const cosAngle = Math.cos(angle);
+        // Switch to back view when companion is behind protagonist
+        if (cosAngle > 0.3 && Math.cos(lastAngle) <= 0.3) {
+          this.compImg.src = PINK_PATH + 'back view.png';
+        } else if (cosAngle <= 0.3 && Math.cos(lastAngle) > 0.3) {
+          this.compImg.src = PINK_PATH + 'big happines.png';
+        }
+
+        lastAngle = angle;
+
+        this.comp.style.left = x + 'px';
+        this.comp.style.top = y + 'px';
+        this.comp.style.transition = 'none';
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Reset position to side of protagonist
+          this.comp.style.left = '28%';
+          this.comp.style.top = '';
+          this.comp.style.transform = '';
+          this.compImg.src = PINK_PATH + 'big happines.png';
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Character shake (for angry stomping)
+  shake(element, intensity = 4, duration = 500) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      const startTime = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        if (elapsed > duration) {
+          el.style.transform = el === this.protag ? 'translateX(-50%)' : '';
+          resolve();
+          return;
+        }
+        const x = Math.sin(elapsed * 0.05) * intensity * (1 - elapsed / duration);
+        const baseX = el === this.protag ? '-50%' : '0';
+        el.style.transform = `translateX(calc(${baseX} + ${x}px))`;
+        el.style.transition = 'none';
+        requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Vertical bounce (for happy mode)
+  bounce(element, height = 15, count = 3, durationPerBounce = 300) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      let i = 0;
+      const baseTransform = el === this.protag ? 'translateX(-50%)' : '';
+      const doBounce = () => {
+        if (i >= count) { el.style.transform = baseTransform; resolve(); return; }
+        const dir = i % 2 === 0 ? -1 : 1;
+        el.style.transition = `transform ${durationPerBounce/2}ms ease-out`;
+        el.style.transform = `${baseTransform} translateY(${dir * height}px)`;
+        setTimeout(() => {
+          el.style.transition = `transform ${durationPerBounce/2}ms ease-in`;
+          el.style.transform = baseTransform;
+          setTimeout(() => { i++; doBounce(); }, durationPerBounce / 2);
+        }, durationPerBounce / 2);
+      };
+      doBounce();
+    });
+  }
+
+  // Upper body shake (for scared mode)
+  upperShake(duration = 1500) {
+    return new Promise(resolve => {
+      const el = this.protag;
+      el.style.transformOrigin = 'bottom center';
+      el.style.transition = 'none';
+      const startTime = performance.now();
+
+      const animate = (now) => {
+        const elapsed = now - startTime;
+        if (elapsed > duration) {
+          el.style.transform = 'translateX(-50%) rotate(0deg)';
+          el.style.transformOrigin = 'center center';
+          resolve();
+          return;
+        }
+        const intensity = 3 * (1 - elapsed / duration);
+        const rot = Math.sin(elapsed * 0.04) * intensity;
+        el.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+        requestAnimationFrame(animate);
+      };
+      requestAnimationFrame(animate);
+    });
+  }
+
+  // Switch sprite with fade transition
+  switchSprite(target, newSprite, duration = 400) {
+    return new Promise(resolve => {
+      const img = target === 'protag' ? this.protagImg : this.compImg;
+      const path = target === 'protag' ? BLUE_PATH : (this.compPath || PINK_PATH);
+
+      img.style.transition = `opacity ${duration/2}ms`;
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = path + newSprite;
+        img.style.opacity = '1';
+        setTimeout(resolve, duration / 2);
+      }, duration / 2);
+    });
+  }
+
+  // Move element horizontally
+  moveToX(element, toXPercent, duration = 600) {
+    return new Promise(resolve => {
+      const el = element === 'protag' ? this.protag : this.comp;
+      el.style.transition = `left ${duration}ms ease-in-out`;
+      if (element === 'protag') {
+        el.style.left = toXPercent + '%';
+        el.style.transform = 'translateX(-50%)';
+      } else {
+        el.style.left = toXPercent + '%';
+      }
+      setTimeout(resolve, duration);
+    });
+  }
+
+  // Scale balloon
+  scaleBalloon(scale, duration = 500) {
+    return new Promise(resolve => {
+      this.balloon.style.display = 'block';
+      this.balloon.style.transition = `transform ${duration}ms ease-out`;
+      this.balloon.style.transform = `scale(${scale})`;
+      setTimeout(resolve, duration);
+    });
+  }
+
+  // Show balloon
+  showBalloon(x, y) {
+    this.balloon.style.display = 'block';
+    this.balloon.style.left = x + 'px';
+    this.balloon.style.top = y + 'px';
+    this.balloon.style.transform = 'scale(0.3)';
+  }
+
+  hideBalloon() {
+    this.balloon.style.display = 'none';
+    this.balloon.style.transform = 'scale(1)';
+  }
+
+  // Particle burst (stars + hearts by default, or custom type)
+  particleBurst(x, y, count = 30, type = 'love') {
+    return new Promise(resolve => {
+      const emojis = type === 'burst'
+        ? ['💨', '💥', '💨', '💥', '💨', '💥', '💫', '🌀']
+        : ['⭐', '✨', '💖', '❤️', '💕', '🌟', '💝', '🎉'];
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.className = 'particle';
+        p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.fontSize = (18 + Math.random() * 22) + 'px';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 160;
+        const dist2 = 80 + Math.random() * 200;
+        p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        p.style.setProperty('--dy', Math.sin(angle) * dist - 40 + 'px');
+        p.style.setProperty('--dx2', Math.cos(angle) * dist2 + 'px');
+        p.style.setProperty('--dy2', Math.sin(angle) * dist2 - 80 + 'px');
+        p.style.animationDuration = (0.8 + Math.random() * 1.4) + 's';
+        fragment.appendChild(p);
+      }
+
+      this.sky.appendChild(fragment);
+
+      setTimeout(() => {
+        const particles = this.sky.querySelectorAll('.particle');
+        particles.forEach(p => p.remove());
+        resolve();
+      }, 1200);
+    });
+  }
+
+  // Reset positions
+  reset() {
+    this.compPath = null; // reset to default Pink-white
+    this.protag.style.transition = 'none';
+    this.protag.style.left = '50%';
+    this.protag.style.top = '';
+    this.protag.style.transform = 'translateX(-50%)';
+    this.protag.style.transformOrigin = 'center center';
+    this.protagImg.style.opacity = '1';
+    this.protagImg.style.transition = 'none';
+
+    this.comp.style.transition = 'none';
+    this.comp.style.left = '120%';
+    this.comp.style.top = '';
+    this.comp.style.transform = '';
+    this.comp.classList.remove('visible');
+    this.compImg.style.opacity = '1';
+    this.compImg.style.transition = 'none';
+    this.compImg.src = '';
+
+    this.hideBalloon();
+    this.bubble.style.opacity = '0';
+    this.bubble.classList.remove('above');
+
+    // Remove leftover particles
+    this.sky.querySelectorAll('.particle').forEach(p => p.remove());
+  }
+}
+
+// ===========================================================================
+// GAME CONTROLLER
+// ===========================================================================
+const app = document.getElementById('app');
+const pages = {
+  home: document.getElementById('page-home'),
+  anim: document.getElementById('page-anim'),
+  result: document.getElementById('page-result'),
+};
+const engine = new AnimEngine();
+let currentMode = '';
+
+function showPage(name) {
+  Object.values(pages).forEach(p => p.classList.remove('active'));
+  pages[name].classList.add('active');
+}
+
+// Language switching
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  // Update all i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[lang] && I18N[lang][key]) {
+      el.textContent = I18N[lang][key];
+    }
+  });
+  // RTL for Arabic
+  if (lang === 'ar') {
+    document.body.classList.add('rtl');
+    document.documentElement.dir = 'rtl';
+    document.documentElement.lang = 'ar';
+  } else {
+    document.body.classList.remove('rtl');
+    document.documentElement.dir = 'ltr';
+    document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+  }
+}
+
+// Detect browser language
+const browserLang = navigator.language || '';
+const defaultLang = browserLang.startsWith('zh') ? 'zh'
+  : browserLang.startsWith('ar') ? 'ar'
+  : 'en';
+setLang(defaultLang);
+
+// Language button clicks
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLang(btn.dataset.lang));
+});
+
+// ===========================================================================
+// MODE ANIMATIONS
+// ===========================================================================
+function t(key) { return I18N[currentLang][key] || key; }
+
+// Helper: get bottom-center position for text bubbles
+function bubblePos() {
+  const skyRect = engine.sky.getBoundingClientRect();
+  return {
+    x: skyRect.width / 2 - 70,
+    y: skyRect.height - 100
+  };
+}
+
+// Helper: get position above protagonist's head
+function bubbleAboveProtag() {
+  const pRect = engine.protag.getBoundingClientRect();
+  const skyRect = engine.sky.getBoundingClientRect();
+  return {
+    x: pRect.left - skyRect.left + 20,
+    y: pRect.top - skyRect.top - 30
+  };
+}
+
+async function playSadMode() {
+  engine.reset();
+  engine.setProtag('sad.png');
+  engine.setComp('big happines.png');
+  // Position protagonist center
+  engine.protag.style.left = '50%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '15%';
+
+  // Companion walks in from right (reduced initial wait)
+  await sleep(300);
+  await engine.walkIn('right', '25%', 700);
+
+  // Text bubble near companion: Happy Alaa is here!
+  const compRect = engine.comp.getBoundingClientRect();
+  const compSkyRect = engine.sky.getBoundingClientRect();
+  const compX = compRect.left - compSkyRect.left + compRect.width / 2 - 60;
+  const compY = compRect.top - compSkyRect.top - 10;
+  await engine.showBubble(t('happyAlaaHere'), compX, compY, 1200, true);
+  await sleep(400);
+  const bp = bubblePos();
+  await engine.showBubble(t('heyWhySad'), bp.x, bp.y, 1200);
+
+  // Blink twice
+  await engine.blink(2, 250);
+
+  // Wait a moment, protagonist still sad
+  await sleep(400);
+  await engine.showBubble('🤔', bp.x, bp.y, 1200);
+
+  // Circle around
+  await engine.circle(3, 1100);
+
+  // Balloon animation — offset from companion to avoid overlap
+  const cRect = engine.comp.getBoundingClientRect();
+  const skyR = engine.sky.getBoundingClientRect();
+  const cX = cRect.left - skyR.left + cRect.width + 15;
+  const cY = cRect.top - skyR.top + cRect.height * 0.15;
+  engine.showBalloon(cX, cY);
+
+  await engine.scaleBalloon(1.2, 400);
+
+  // Two possible outcomes
+  const willPop = Math.random() > 0.5;
+
+  if (willPop) {
+    // Balloon keeps inflating and pops
+    await engine.scaleBalloon(2.5, 700);
+    await sleep(100);
+    engine.hideBalloon();
+    // Particle burst!
+    await engine.particleBurst(cX, cY, 35);
+    engine.showBubble(t('pop'), bp.x, bp.y, 1000);
+  } else {
+    // Balloon deflates toward protagonist
+    await engine.scaleBalloon(1.5, 500);
+    // Move balloon toward protagonist
+    const pRect = engine.protag.getBoundingClientRect();
+    const pX = pRect.left - skyR.left;
+    const pY = pRect.top - skyR.top;
+    engine.balloon.style.transition = 'all 600ms ease-in-out';
+    engine.balloon.style.left = pX + 'px';
+    engine.balloon.style.top = pY + 'px';
+    engine.balloon.style.transform = 'scale(0.4) rotate(20deg)';
+    await sleep(700);
+    engine.hideBalloon();
+    await engine.particleBurst(pX + 40, pY + 20, 20);
+  }
+
+  // Protagonist becomes happy
+  await sleep(300);
+  await engine.switchSprite('protag', 'happiness.png', 500);
+
+  // Companion also shows happiness
+  engine.setComp('big happines.png');
+
+  // Both bounce together
+  await engine.bounce('protag', 12, 3, 300);
+  const yayPos = bubbleAboveProtag();
+  await Promise.all([
+    engine.showBubble(t('yay'), yayPos.x, yayPos.y, 1500, true),
+    sleep(1500),
+  ]);
+}
+
+async function playHappyMode() {
+  engine.reset();
+  engine.setProtag('happy.png');
+  engine.protag.style.left = '40%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+
+  // Protagonist bounces
+  await engine.bounce('protag', 14, 3, 280);
+
+  // "一起来玩吧" first
+  const bp2 = bubblePos();
+  await engine.showBubble(t('letsPlay'), bp2.x, bp2.y, 1000);
+  await sleep(100);
+
+  // Best friend slides in from left AFTER letsPlay
+  engine.compImg.src = 'Character Model/Best_friend/big happy.png';
+  engine.compPath = BEST_PATH;
+  engine.comp.classList.add('visible');
+  engine.comp.style.cssText = 'left:-30%; top:12%; z-index:99; opacity:1; display:block; transition:none;';
+  engine.comp.offsetHeight;
+  engine.comp.style.cssText = 'left:55%; top:12%; z-index:99; opacity:1; display:block; transition:left 700ms ease-out;';
+  await sleep(800);
+
+  // "bestFriendHere" after companion arrives
+  await engine.showBubble(t('bestFriendHere'), bp2.x, bp2.y, 1200);
+  await sleep(200);
+
+  // Both bounce together
+  await Promise.all([
+    engine.bounce('protag', 12, 2, 250),
+    engine.bounce('comp', 12, 2, 250),
+  ]);
+
+  // Move toward each other (high five position)
+  await engine.moveToX('protag', '35%', 400);
+  await engine.moveToX('comp', '50%', 400);
+
+  // Spin around each other
+  await Promise.all([
+    engine.bounce('protag', 16, 3, 280),
+    engine.bounce('comp', 16, 3, 280),
+  ]);
+
+  // Heart particles
+  const skyRect = engine.sky.getBoundingClientRect();
+  const midX = skyRect.width / 2;
+  const midY = skyRect.height / 2;
+  await engine.particleBurst(midX - 40, midY - 20, 25);
+
+  // Protagonist becomes big happy
+  await engine.switchSprite('protag', 'big happines.png', 400);
+  // Note: companion already shows big happy.png, no need to switch
+
+  await engine.showBubble(t('haha'), bp2.x, bp2.y, 1000);
+  await sleep(800);
+}
+
+async function playAngryMode() {
+  engine.reset();
+  engine.setProtag('angry.png');
+  engine.protag.style.left = '45%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+
+  // Stomping angrily
+  await engine.shake('protag', 5, 500);
+
+  // Create soccer ball
+  const ball = document.createElement('span');
+  ball.textContent = '⚽';
+  ball.style.cssText = 'position:absolute;font-size:40px;z-index:30;pointer-events:none;';
+  engine.sky.appendChild(ball);
+
+  const skyRect = engine.sky.getBoundingClientRect();
+  const ballSize = 40;
+  const maxX = skyRect.width - ballSize;
+  const maxY = skyRect.height - ballSize;
+
+  // Ball starts near protagonist's foot
+  const pRect = engine.protag.getBoundingClientRect();
+  let bx = pRect.left - skyRect.left + pRect.width * 0.3;
+  let by = pRect.top - skyRect.top + pRect.height * 0.75;
+  ball.style.left = bx + 'px';
+  ball.style.top = by + 'px';
+
+  await sleep(300);
+
+  // Kick! Ball launches
+  let vx = 8 + Math.random() * 6;
+  let vy = -(10 + Math.random() * 8);
+  let bounceCount = 0;
+  const maxBounces = 10;
+  let done = false;
+
+  await new Promise(resolve => {
+    const physics = () => {
+      if (done) { resolve(); return; }
+      bx += vx;
+      by += vy;
+      // Bounce off walls
+      if (bx <= 0) { bx = 0; vx = Math.abs(vx); bounceCount++; }
+      if (bx >= maxX) { bx = maxX; vx = -Math.abs(vx); bounceCount++; }
+      if (by <= 0) { by = 0; vy = Math.abs(vy); bounceCount++; }
+      if (by >= maxY) { by = maxY; vy = -Math.abs(vy); bounceCount++; }
+      // Friction
+      vx *= 0.998;
+      vy *= 0.998;
+      ball.style.left = bx + 'px';
+      ball.style.top = by + 'px';
+      if (bounceCount >= maxBounces) {
+        done = true;
+        const ballCX = bx + ballSize / 2;
+        const ballCY = by + ballSize / 2;
+        ball.remove();
+        engine.particleBurst(ballCX, ballCY, 25, 'burst').then(resolve);
+      } else {
+        requestAnimationFrame(physics);
+      }
+    };
+    requestAnimationFrame(physics);
+  });
+
+  // Alaa calms down after ball explodes
+  await sleep(300);
+  await engine.switchSprite('protag', 'normal.png', 500);
+
+  const bp3 = bubblePos();
+  await engine.showBubble(t('itsOkay'), bp3.x, bp3.y, 1000);
+  await sleep(1000);
+}
+
+async function playScaredMode() {
+  engine.reset();
+  engine.setProtag('sad.png');
+  engine.protag.style.left = '45%';
+  engine.protag.style.transform = 'translateX(-50%)';
+  engine.protag.style.top = '12%';
+  engine.protag.style.transformOrigin = 'bottom center';
+
+  // Protagonist looks tired — slight droop
+  engine.protag.style.transition = 'transform 600ms ease-out';
+  engine.protag.style.transform = 'translateX(-50%) rotate(-5deg)';
+  await sleep(800);
+
+  // Companion (Pink-white normal) walks in from left
+  engine.setComp('normal.png');
+  await engine.walkIn('left', '30%', 800);
+
+  const bp4 = bubblePos();
+  await engine.showBubble(t('dontBeScared'), bp4.x, bp4.y, 1200);
+
+  // Companion approaches
+  await engine.moveToX('comp', '42%', 600);
+  await sleep(200);
+
+  // Companion helps protagonist to bed — lie down
+  await engine.moveToX('comp', '44%', 400);
+  await sleep(400);
+
+  // Protagonist lies down: rotate 90° and switch to back view
+  engine.protag.style.transition = 'transform 800ms ease-in-out, opacity 0.5s';
+  engine.protag.style.transform = 'translateX(-50%) rotate(90deg)';
+  await sleep(500);
+  await engine.switchSprite('protag', 'back view.png', 400);
+  // Keep rotated while showing back view
+  engine.protag.style.transform = 'translateX(-50%) rotate(90deg)';
+
+  await engine.showBubble(t('itsOkay'), bp4.x, bp4.y, 1000);
+
+  // Companion smiles
+  await engine.switchSprite('comp', 'good.png', 400);
+  await sleep(1500);
+}
+
+// ===========================================================================
+// NAVIGATION & EVENT HANDLERS
+// ===========================================================================
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+let animRunning = false;
+let animCancelled = false;
+
+async function startMode(mode) {
+  if (animRunning) return;
+  animRunning = true;
+  animCancelled = false;
+  currentMode = mode;
+  showPage('anim');
+
+  try {
+    switch (mode) {
+      case 'sad': await playSadMode(); break;
+      case 'happy': await playHappyMode(); break;
+      case 'angry': await playAngryMode(); break;
+      case 'scared': await playScaredMode(); break;
+    }
+  } catch (e) {
+    console.error('Animation error:', e);
+  }
+
+  animRunning = false;
+  // Only show result if animation wasn't cancelled
+  if (!animCancelled) {
+    showResult(mode);
+  }
+}
+
+function showResult(mode) {
+  const img = document.getElementById('result-img');
+  const msg = document.getElementById('result-msg');
+  // Set image before showing page to avoid flash
+  if (img) {
+    if (mode === 'angry') {
+      img.src = BLUE_PATH + 'normal.png';
+    } else if (mode === 'scared') {
+      img.src = BLUE_PATH + 'back view.png';
+    } else {
+      img.src = BLUE_PATH + 'happiness.png';
+    }
+  }
+  showPage('result');
+  if (!img || !msg) return;
+
+  if (mode === 'angry') {
+    msg.textContent = t('calmEnd');
+  } else if (mode === 'scared') {
+    msg.textContent = t('sleepEnd');
+  } else {
+    msg.textContent = t('happyEnd');
+  }
+
+  // Update replay/home/exit button text
+  const btnReplay = document.getElementById('btn-replay');
+  const btnHome = document.getElementById('btn-home');
+  const btnExit = document.getElementById('btn-exit');
+  if (btnReplay) btnReplay.textContent = t('replay');
+  if (btnHome) btnHome.textContent = t('back');
+  if (btnExit) btnExit.textContent = t('exit');
+}
+
+// Mode button clicks
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    if (mode) startMode(mode);
+  });
+});
+
+// Back button in animation
+document.getElementById('anim-back').addEventListener('click', () => {
+  animCancelled = true;
+  animRunning = false;
+  showPage('home');
+});
+
+// Result buttons
+document.getElementById('btn-replay').addEventListener('click', () => {
+  animRunning = false;
+  engine.reset();
+  startMode(currentMode);
+});
+document.getElementById('btn-home').addEventListener('click', () => {
+  animRunning = false;
+  showPage('home');
+});
+document.getElementById('btn-exit').addEventListener('click', () => {
+  if (confirm(t('exitConfirm') || '确定要退出吗？')) {
+    animRunning = false;
+    showPage('home');
+  }
+});
+
+// ===========================================================================
+// MY PANEL — Wardrobe & Special Background
+// ===========================================================================
+const CLOTHING_OPTIONS = [
+  { path: 'Character Model/Black-black/clothing.png', label: 'Black-Black', color: '黑黑' },
+  { path: 'Character Model/Black-white/clothing.png', label: 'Black-White', color: '黑白' },
+  { path: 'Character Model/Blue-white/clothing.png', label: 'Blue-White', color: '蓝白' },
+  { path: 'Character Model/Blue-white/clothing😡.png', label: 'Blue-White Angry', color: '蓝白😡' },
+  { path: 'Character Model/Brown-white/clothing.png', label: 'Brown-White', color: '棕白' },
+  { path: 'Character Model/Pink-white/clothing.png', label: 'Pink-White', color: '粉白' },
+];
+const BG_OPTIONS = [
+  { path: 'Character Model/Black-white/special background.png', label: 'Black-White BG', color: '黑白背景', i18nKey: 'alaaPanda' },
+  { path: 'Character Model/Blue-white/special background.png', label: 'Blue-White BG', color: '蓝白背景', i18nKey: 'luluFriends' },
+  { path: 'Character Model/Brown-white/special background.png', label: 'Brown-White BG', color: '棕白背景', i18nKey: 'luluBalloons' },
+  { path: 'Character Model/Pink-white/special background.png', label: 'Pink-White BG', color: '粉白背景', i18nKey: 'alaaWork' },
+  { path: 'Character Model/special background/丸子头-Alaa.png', label: 'Bun-Alaa BG', color: '丸子头', i18nKey: 'bunAlaa' },
+  { path: 'Character Model/special background/Long-Alaa.png', label: 'Dragon-Alaa BG', color: '龙', i18nKey: 'longAlaa' },
+];
+
+let currentClothing = null;    // selected clothing path
+let currentBackground = null;  // selected background path
+let activeTab = 'wardrobe';
+
+const homeCharImg = document.querySelector('.home-char img');
+const defaultHomeSrc = homeCharImg.src;
+
+function updateHomeCharacter() {
+  // Priority: special background > clothing > default
+  if (currentBackground) {
+    homeCharImg.src = currentBackground;
+  } else if (currentClothing) {
+    homeCharImg.src = currentClothing;
+  } else {
+    homeCharImg.src = defaultHomeSrc;
+  }
+}
+
+function renderMyGrid(tab) {
+  const grid = document.getElementById('my-grid');
+  const items = tab === 'wardrobe' ? CLOTHING_OPTIONS : BG_OPTIONS;
+  const selected = tab === 'wardrobe' ? currentClothing : currentBackground;
+
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'my-item';
+    if ((tab === 'wardrobe' && currentClothing === item.path) ||
+        (tab === 'bg' && currentBackground === item.path)) {
+      div.classList.add('selected');
+    }
+    let innerHTML = `<img src="${item.path}" alt="${item.label}" onerror="this.parentElement.style.opacity='0.3'">`;
+    if (item.i18nKey) {
+      innerHTML += `<span class="item-label">${t(item.i18nKey)}</span>`;
+    }
+    div.innerHTML = innerHTML;
+    div.addEventListener('click', () => {
+      if (tab === 'wardrobe') {
+        currentClothing = (currentClothing === item.path) ? null : item.path;
+      } else {
+        currentBackground = (currentBackground === item.path) ? null : item.path;
+      }
+      updateHomeCharacter();
+      renderMyGrid(tab);
+    });
+    grid.appendChild(div);
+  });
+
+  if (items.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">' + t('noItems') + '</p>';
+  }
+}
+
+// My Panel open/close
+// my-btn toggles sidebar menu (short click) or change avatar (long press)
+let avatarPressTimer = null;
+const myBtn = document.getElementById('my-btn');
+myBtn.addEventListener('mousedown', () => { avatarPressTimer = setTimeout(openAvatarPicker, 800); });
+myBtn.addEventListener('mouseup', () => { clearTimeout(avatarPressTimer); });
+myBtn.addEventListener('mouseleave', () => { clearTimeout(avatarPressTimer); });
+myBtn.addEventListener('touchstart', (e) => { avatarPressTimer = setTimeout(openAvatarPicker, 800); }, {passive:true});
+myBtn.addEventListener('touchend', () => { clearTimeout(avatarPressTimer); });
+myBtn.addEventListener('touchmove', () => { clearTimeout(avatarPressTimer); });
+myBtn.addEventListener('click', (e) => {
+  // Short click: toggle sidebar (only if not a long press)
+  if (avatarPressTimer) { clearTimeout(avatarPressTimer); document.getElementById('sidebar-menu').classList.toggle('open'); }
+});
+
+function openAvatarPicker() {
+  document.getElementById('avatar-input').click();
+}
+document.getElementById('avatar-input').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    document.getElementById('avatar-img').src = dataUrl;
+    localStorage.setItem('avatar', dataUrl);
+  };
+  reader.readAsDataURL(file);
+});
+// Restore saved avatar
+(function() {
+  const saved = localStorage.getItem('avatar');
+  if (saved) document.getElementById('avatar-img').src = saved;
+})();
+// Close sidebar when clicking outside
+document.addEventListener('click', (e) => {
+  const sidebar = document.getElementById('sidebar-menu');
+  const myBtn = document.getElementById('my-btn');
+  if (sidebar && myBtn && !myBtn.contains(e.target) && !sidebar.contains(e.target)) {
+    sidebar.classList.remove('open');
+  }
+});
+
+// wardrobe-btn opens wardrobe/background overlay
+document.getElementById('wardrobe-btn').addEventListener('click', () => {
+  document.getElementById('my-overlay').classList.add('open');
+  activeTab = 'wardrobe';
+  document.querySelectorAll('.my-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('[data-tab="wardrobe"]').classList.add('active');
+  renderMyGrid('wardrobe');
+});
+
+document.getElementById('my-close').addEventListener('click', () => {
+  document.getElementById('my-overlay').classList.remove('open');
+});
+document.getElementById('my-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('my-overlay').classList.remove('open');
+  }
+});
+
+// Tab switching
+document.querySelectorAll('.my-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.my-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeTab = tab.dataset.tab;
+    renderMyGrid(activeTab);
+  });
+});
+
+// ===========================================================================
+// PRINCESS ALAA — Image Gallery with Groups & Lightbox
+// ===========================================================================
+const PRINCESS_IMG_DIR = 'Princess Alaa/';
+let princessGroups = {};        // { "groupName": [path, ...], "__ungrouped__": [...] }
+let princessAllPhotos = [];     // flat array for lightbox navigation
+let princessActiveGroup = '__ungrouped__';
+
+// Known subfolders that contain princess photo groups
+const PRINCESS_GROUP_DIRS = ['Princess', 'other'];
+
+async function scanPrincessPhotos() {
+  const groups = {};
+  const all = [];
+
+  // 1. Scan root-level images
+  const rootNames = ['Cuuuuuute Alaa.jpg'];
+  const rootResults = await Promise.all(rootNames.map(name => {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { console.log('Found root:', name); resolve(PRINCESS_IMG_DIR + name); };
+      img.onerror = () => resolve(null);
+      img.src = PRINCESS_IMG_DIR + name;
+    });
+  }));
+  const rootFound = rootResults.filter(Boolean);
+  if (rootFound.length > 0) {
+    groups['__ungrouped__'] = rootFound;
+    rootFound.forEach(p => all.push(p));
+  }
+
+  // 2. Scan subfolders (groups)
+  for (const dir of PRINCESS_GROUP_DIRS) {
+    const descriptive = ['Design 1.png','Design 2.png','Design 3.png','Design 4.png','Design 5.png',
+      'Design 6.png','Design 7.png','Design 8.png','Design 9.png','Design 10.png',
+      'All.png','Face.png','Eyes.png','Mouth.png','Hair.png','Back.png',
+      'photo1.jpg','photo2.jpg','pic1.png','pic2.png'];
+    const commonNames = [];
+    for (let i = 1; i <= 20; i++) {
+      commonNames.push(i + '.jpg', i + '.jpeg', i + '.png', i + '.gif', i + '.webp');
+    }
+
+    const allNames = [...descriptive, ...commonNames];
+    const results = await Promise.all(allNames.map(name => {
+      return new Promise(resolve => {
+        const img = new Image();
+        const fullPath = PRINCESS_IMG_DIR + dir + '/' + name;
+        img.onload = () => { console.log('Found in ' + dir + ':', name); resolve(fullPath); };
+        img.onerror = () => resolve(null);
+        img.src = fullPath;
+      });
+    }));
+    const found = results.filter(Boolean);
+    console.log('Princess group ' + dir + ' found ' + found.length + ' photos:', found);
+    if (found.length > 0) {
+      groups[dir] = found;
+      found.forEach(p => all.push(p));
+    }
+  }
+
+  console.log('Total princess photos:', all.length, 'Groups:', Object.keys(groups));
+  return { groups, all };
+}
+
+function renderPrincessTabs() {
+  const tabs = document.getElementById('princess-tabs');
+  if (!tabs) return;
+  tabs.innerHTML = '';
+
+  const groupNames = Object.keys(princessGroups);
+  if (groupNames.length <= 1) { tabs.style.display = 'none'; return; }
+  tabs.style.display = 'flex';
+
+  groupNames.forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'princess-tab';
+    if (name === princessActiveGroup) btn.classList.add('active');
+    btn.textContent = name === '__ungrouped__' ? '📷 精选' : '📁 ' + name;
+    btn.addEventListener('click', () => {
+      princessActiveGroup = name;
+      renderPrincessTabs();
+      renderPrincessGrid();
+    });
+    tabs.appendChild(btn);
+  });
+}
+
+function renderPrincessGrid() {
+  const grid = document.getElementById('princess-grid');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  const photos = princessGroups[princessActiveGroup] || [];
+
+  if (photos.length === 0) {
+    grid.classList.add('empty');
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#C090A0;padding:50px 20px;font-size:14px;">' + t('noPrincessPhotos') + '</p>';
+    return;
+  }
+
+  grid.classList.remove('empty');
+  photos.forEach((photoPath) => {
+    const globalIndex = princessAllPhotos.indexOf(photoPath);
+    const card = document.createElement('div');
+    card.className = 'princess-img-card';
+    card.innerHTML = '<img src="' + photoPath + '" alt="Princess Alaa" loading="lazy">';
+    card.addEventListener('click', () => openLightbox(photoPath, globalIndex >= 0 ? globalIndex : 0));
+    grid.appendChild(card);
+  });
+}
+
+// ===== LIGHTBOX =====
+let lightboxScale = 1;
+let lightboxCurrentIndex = 0;
+let lightboxPanX = 0, lightboxPanY = 0;
+
+function openLightbox(src, index) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  if (!lb || !img) return;
+
+  lightboxCurrentIndex = index;
+  lightboxScale = 1;
+  lightboxPanX = 0; lightboxPanY = 0;
+  img.src = src;
+  img.style.transform = 'scale(1) translate(0px, 0px)';
+  lb.classList.add('open');
+
+  const hint = lb.querySelector('.lightbox-hint');
+  if (hint) hint.textContent = t('pinchZoom');
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  lb.classList.remove('open');
+  lightboxScale = 1;
+  lightboxPanX = 0; lightboxPanY = 0;
+  const img = document.getElementById('lightbox-img');
+  if (img) img.style.transform = 'scale(1) translate(0px, 0px)';
+}
+
+function applyLightboxTransform() {
+  const img = document.getElementById('lightbox-img');
+  if (!img) return;
+  img.style.transform = 'scale(' + lightboxScale + ') translate(' + lightboxPanX + 'px, ' + lightboxPanY + 'px)';
+}
+
+function setupLightboxZoom() {
+  const wrap = document.getElementById('lightbox-img-wrap');
+  const img = document.getElementById('lightbox-img');
+  if (!wrap || !img) return;
+
+  // --- Pinch zoom ---
+  let initialDist = 0;
+  let initialScale = 1;
+
+  // --- Drag/pan ---
+  let isDragging = false;
+  let dragStartX = 0, dragStartY = 0;
+  let panStartX = 0, panStartY = 0;
+
+  // Touch start
+  wrap.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+      // Pinch start
+      isDragging = false;
+      initialDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      initialScale = lightboxScale;
+      e.preventDefault();
+    } else if (e.touches.length === 1 && lightboxScale > 1) {
+      // Single finger drag when zoomed
+      isDragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      panStartX = lightboxPanX;
+      panStartY = lightboxPanY;
+    }
+  }, { passive: false });
+
+  // Touch move
+  wrap.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+      // Pinch zoom
+      const currentDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      if (initialDist > 0) {
+        lightboxScale = Math.min(Math.max(initialScale * (currentDist / initialDist), 0.5), 3);
+        if (lightboxScale <= 1) { lightboxPanX = 0; lightboxPanY = 0; }
+        applyLightboxTransform();
+        e.preventDefault();
+      }
+    } else if (e.touches.length === 1 && isDragging) {
+      // Pan image
+      lightboxPanX = panStartX + (e.touches[0].clientX - dragStartX);
+      lightboxPanY = panStartY + (e.touches[0].clientY - dragStartY);
+      applyLightboxTransform();
+    }
+  }, { passive: false });
+
+  wrap.addEventListener('touchend', (e) => {
+    initialDist = 0;
+    if (e.touches.length === 0) isDragging = false;
+  });
+
+  // --- Mouse drag for desktop ---
+  wrap.addEventListener('mousedown', (e) => {
+    if (lightboxScale > 1) {
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      panStartX = lightboxPanX;
+      panStartY = lightboxPanY;
+      e.preventDefault();
+    }
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    lightboxPanX = panStartX + (e.clientX - dragStartX);
+    lightboxPanY = panStartY + (e.clientY - dragStartY);
+    applyLightboxTransform();
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; });
+
+  // Double-tap to zoom
+  wrap.addEventListener('click', (e) => {
+    if (e.detail === 2) {
+      if (lightboxScale > 1) {
+        lightboxScale = 1; lightboxPanX = 0; lightboxPanY = 0;
+      } else {
+        lightboxScale = 2;
+      }
+      applyLightboxTransform();
+    }
+  });
+
+  // Mouse wheel zoom for desktop
+  wrap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    lightboxScale = Math.min(Math.max(lightboxScale + delta, 0.5), 3);
+    if (lightboxScale <= 1) { lightboxPanX = 0; lightboxPanY = 0; }
+    applyLightboxTransform();
+  }, { passive: false });
+
+  // Swipe to next/prev photo (only when not zoomed)
+  let touchStartX = 0;
+  wrap.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1 && lightboxScale <= 1) {
+      touchStartX = e.touches[0].clientX;
+    }
+  });
+  wrap.addEventListener('touchend', (e) => {
+    if (lightboxScale > 1) return;
+    if (e.touches.length === 0 && princessAllPhotos.length > 1) {
+      const dx = (e.changedTouches[0] ? e.changedTouches[0].clientX : touchStartX) - touchStartX;
+      if (Math.abs(dx) > 80) {
+        if (dx < 0) {
+          lightboxCurrentIndex = (lightboxCurrentIndex + 1) % princessAllPhotos.length;
+        } else {
+          lightboxCurrentIndex = (lightboxCurrentIndex - 1 + princessAllPhotos.length) % princessAllPhotos.length;
+        }
+        lightboxScale = 1; lightboxPanX = 0; lightboxPanY = 0;
+        img.src = princessAllPhotos[lightboxCurrentIndex];
+        img.style.transform = 'scale(1) translate(0px, 0px)';
+      }
+    }
+  });
+}
+
+// Princess Panel open/close
+document.getElementById('princess-btn').addEventListener('click', async () => {
+  document.getElementById('princess-overlay').classList.add('open');
+  if (princessAllPhotos.length === 0) {
+    const result = await scanPrincessPhotos();
+    princessGroups = result.groups;
+    princessAllPhotos = result.all;
+    // Default to first group
+    const groupNames = Object.keys(princessGroups);
+    princessActiveGroup = groupNames.length > 0 ? groupNames[0] : '__ungrouped__';
+  }
+  renderPrincessTabs();
+  renderPrincessGrid();
+});
+
+document.getElementById('princess-close').addEventListener('click', () => {
+  document.getElementById('princess-overlay').classList.remove('open');
+});
+document.getElementById('princess-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) {
+    document.getElementById('princess-overlay').classList.remove('open');
+  }
+});
+
+document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+
+setupLightboxZoom();
+
+// ===========================================================================
+// ACCOUNT SYSTEM — Supabase auth + cloud diary sync
+// ===========================================================================
+let sb = null;
+let authUser = null;
+let authTab = 'login';
+let authError = '';
+
+async function initSupabase() {
+  if (typeof SUPABASE_URL === 'undefined' || SUPABASE_URL.includes('YOUR-PROJECT-ID')) {
+    console.log('⚠️ Supabase 未配置，使用本地存储模式');
+    return;
+  }
+  try {
+    const supabaseSDK = window.supabase || supabase;
+    if (!supabaseSDK) { console.log('Supabase SDK not loaded'); return; }
+    const { createClient } = supabaseSDK;
+    sb = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+    });
+    sb.auth.onAuthStateChange((_event, session) => {
+      authUser = session ? session.user : null;
+      updateAuthUI();
+    });
+  } catch(e) { console.log('Supabase init error:', e.message); }
+}
+
+// ===== AUTH GATE (shown on app start, no close button) =====
+let authMode = 'login'; // 'login' | 'register' | 'forgot'
+let authBusy = false;
+
+function getSavedLogin() {
+  try { const s = localStorage.getItem('savedLogin'); return s ? JSON.parse(atob(s)) : null; }
+  catch(e) { return null; }
+}
+function saveLogin(email, password) {
+  localStorage.setItem('savedLogin', btoa(JSON.stringify({e:email, p:password})));
+}
+function clearSavedLogin() {
+  localStorage.removeItem('savedLogin');
+}
+
+function openAuthGate() {
+  authMode = 'login'; authError = ''; authBusy = false;
+  document.getElementById('auth-overlay').classList.add('open');
+  renderAuthGate();
+}
+function closeAuthGate() {
+  document.getElementById('auth-overlay').classList.remove('open');
+}
+function openAuth() {
+  if (authUser) {
+    // Already logged in: show account panel with logout option
+    document.getElementById('auth-overlay').classList.add('open');
+    renderAuthPanel();
+  } else {
+    // Not logged in: show login form
+    authMode = 'login'; authError = ''; authBusy = false;
+    document.getElementById('auth-overlay').classList.add('open');
+    renderAuthPanel();
+  }
+}
+function closeAuth() {
+  document.getElementById('auth-overlay').classList.remove('open');
+}
+
+// ===== RENDER AUTH GATE (no close button) =====
+function renderAuthGate() {
+  const panel = document.getElementById('auth-panel');
+  if (!panel) return;
+  if (authMode === 'forgot') {
+    panel.innerHTML =
+      '<div style="text-align:center;margin-bottom:14px;">' +
+        '<p style="font-size:36px;margin-bottom:6px;">🔑</p>' +
+        '<p style="font-size:16px;font-weight:800;color:#4A3728;">找回密码</p>' +
+      '</div>' +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="请输入注册邮箱" autocomplete="email">' +
+      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">发送重置邮件</button>' +
+      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">← 返回登录</p>' +
+      '<div class="auth-error" id="auth-error">' + authError + '</div>';
+    document.getElementById('auth-submit-btn').addEventListener('click', handleForgotPassword);
+    document.getElementById('auth-back-login').addEventListener('click', () => { authMode='login'; authError=''; renderAuthGate(); });
+    return;
+  }
+  panel.innerHTML =
+    '<div style="text-align:center;margin-bottom:14px;">' +
+      '<p style="font-size:36px;margin-bottom:6px;">🎮</p>' +
+      '<p style="font-size:18px;font-weight:800;color:#4A3728;">Happy Alaa</p>' +
+      '<p style="font-size:13px;color:#B0977A;">登录后数据云端同步</p>' +
+    '</div>' +
+    '<div class="auth-tabs">' +
+      '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">登录</button>' +
+      '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">注册</button>' +
+    '</div>' +
+    '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="邮箱地址" autocomplete="email">' +
+    '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="密码（至少6位）" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
+    '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?'登录':'注册') + '</button>' +
+    (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> 记住密码</label>' : '') +
+    (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">忘记密码？</p>' : '') +
+    '<div class="auth-error" id="auth-error">' + authError + '</div>';
+  // Pre-fill saved credentials
+  const saved = getSavedLogin();
+  if (saved && authMode === 'login') {
+    setTimeout(() => {
+      const em = document.getElementById('auth-email'); if (em) em.value = saved.e;
+      const pw = document.getElementById('auth-password'); if (pw) pw.value = saved.p;
+      const rm = document.getElementById('auth-remember'); if (rm) rm.checked = true;
+    }, 50);
+  }
+  document.getElementById('auth-tab-login').addEventListener('click', () => { authMode='login'; authError=''; renderAuthGate(); });
+  document.getElementById('auth-tab-register').addEventListener('click', () => { authMode='register'; authError=''; renderAuthGate(); });
+  document.getElementById('auth-submit-btn').addEventListener('click', async () => { await handleAuthSubmit(); if (authUser) closeAuthGate(); });
+  document.getElementById('auth-password').addEventListener('keydown', async (e) => { if (e.key==='Enter') { await handleAuthSubmit(); if (authUser) closeAuthGate(); } });
+  if (authMode === 'login') {
+    document.getElementById('auth-forgot-link').addEventListener('click', () => { authMode='forgot'; authError=''; renderAuthGate(); });
+  }
+}
+
+// ===== RENDER AUTH PANEL (has close button, for 🔑 button) =====
+function renderAuthPanel() {
+  const panel = document.getElementById('auth-panel');
+  if (!panel) return;
+  if (authUser) {
+    panel.innerHTML =
+      '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
+      '<div class="auth-user-info">' +
+        '<p style="font-size:40px;margin-bottom:8px;">✅</p>' +
+        '<p style="font-size:16px;font-weight:700;color:#4A3728;margin-bottom:4px;">已登录</p>' +
+        '<p class="auth-user-email">' + authUser.email + '</p>' +
+        '<p style="font-size:12px;color:#4ECDC4;margin-bottom:14px;">📡 日记已云端同步</p>' +
+        '<button class="auth-logout" id="auth-logout-btn">退出登录</button>' +
+      '</div>';
+    document.getElementById('auth-close').addEventListener('click', closeAuth);
+    document.getElementById('auth-logout-btn').addEventListener('click', handleLogout);
+  } else if (authMode === 'forgot') {
+    panel.innerHTML =
+      '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
+      '<div style="text-align:center;margin-bottom:14px;">' +
+        '<p style="font-size:36px;margin-bottom:6px;">🔑</p>' +
+        '<p style="font-size:16px;font-weight:800;color:#4A3728;">找回密码</p>' +
+      '</div>' +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="请输入注册邮箱" autocomplete="email">' +
+      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">发送重置邮件</button>' +
+      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">← 返回登录</p>' +
+      '<div class="auth-error" id="auth-error">' + authError + '</div>';
+    document.getElementById('auth-close').addEventListener('click', closeAuth);
+    document.getElementById('auth-submit-btn').addEventListener('click', handleForgotPassword);
+    document.getElementById('auth-back-login').addEventListener('click', () => { authMode='login'; authError=''; renderAuthPanel(); });
+  } else {
+    panel.innerHTML =
+      '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
+      '<div class="auth-tabs">' +
+        '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">登录</button>' +
+        '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">注册</button>' +
+      '</div>' +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="邮箱地址" autocomplete="email">' +
+      '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="密码（至少6位）" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
+      '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?'登录':'注册') + '</button>' +
+      (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> 记住密码</label>' : '') +
+      (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">忘记密码？</p>' : '') +
+      '<div class="auth-error" id="auth-error">' + authError + '</div>';
+    const saved = getSavedLogin();
+    if (saved && authMode === 'login') {
+      setTimeout(() => {
+        const em = document.getElementById('auth-email'); if (em) em.value = saved.e;
+        const pw = document.getElementById('auth-password'); if (pw) pw.value = saved.p;
+        const rm = document.getElementById('auth-remember'); if (rm) rm.checked = true;
+      }, 50);
+    }
+    document.getElementById('auth-close').addEventListener('click', closeAuth);
+    document.getElementById('auth-tab-login').addEventListener('click', () => { authMode='login'; authError=''; renderAuthPanel(); });
+    document.getElementById('auth-tab-register').addEventListener('click', () => { authMode='register'; authError=''; renderAuthPanel(); });
+    document.getElementById('auth-submit-btn').addEventListener('click', handleAuthSubmit);
+    document.getElementById('auth-password').addEventListener('keydown', (e) => { if (e.key==='Enter') handleAuthSubmit(); });
+    if (authMode === 'login') {
+      document.getElementById('auth-forgot-link').addEventListener('click', () => { authMode='forgot'; authError=''; renderAuthPanel(); });
+    }
+  }
+}
+
+function updateAuthUI() {
+  const btn = document.getElementById('account-btn');
+  if (!btn) return;
+  if (authUser) {
+    btn.textContent = '✅';
+    btn.style.background = '#4ECDC4';
+    btn.style.color = 'white';
+    btn.title = authUser.email + ' - 已登录';
+  } else {
+    btn.textContent = '🔒';
+    btn.style.background = 'rgba(255,255,255,0.9)';
+    btn.style.color = '';
+    btn.title = '未登录 - 点击登录';
+  }
+}
+
+// ===== AUTH HANDLERS =====
+async function handleAuthSubmit() {
+  if (authBusy) return;
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  if (!email || !password) { authError = '请填写邮箱和密码'; renderCurrent(); return; }
+  if (password.length < 6) { authError = '密码至少6位'; renderCurrent(); return; }
+  authBusy = true;
+
+  if (authMode === 'register') {
+    const result = await sb.auth.signUp({ email, password });
+    if (result.error) {
+      authError = result.error.message.includes('already registered') || result.error.message.includes('already exists')
+        ? '该邮箱已注册，请直接登录' : result.error.message;
+    } else if (result.data.session) {
+      authUser = result.data.user; updateAuthUI(); authBusy = false; return;
+    } else {
+      authError = '验证邮件已发送，请检查邮箱并点击链接完成注册';
+    }
+  } else {
+    const result = await sb.auth.signInWithPassword({ email, password });
+    if (result.error) {
+      authError = result.error.message.includes('Invalid login')
+        ? '邮箱或密码错误' : (result.error.message.includes('Email not confirmed') ? '邮箱未验证，请先检查邮箱验证链接' : result.error.message);
+    } else {
+      // Save credentials if "remember me" checked
+      const rm = document.getElementById('auth-remember');
+      if (rm && rm.checked) { saveLogin(email, password); } else { clearSavedLogin(); }
+      authUser = result.data.user; updateAuthUI(); authBusy = false; return;
+    }
+  }
+  authBusy = false;
+  renderCurrent();
+}
+
+async function handleForgotPassword() {
+  if (authBusy) return;
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email) { authError = '请输入注册邮箱'; renderCurrent(); return; }
+  authBusy = true;
+  const result = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+  if (result.error) {
+    authError = '发送失败：' + result.error.message;
+  } else {
+    authError = '重置邮件已发送，请检查邮箱';
+  }
+  authBusy = false;
+  renderCurrent();
+}
+
+function renderCurrent() {
+  // Determine gate vs panel: gate has no close button
+  const panel = document.getElementById('auth-panel');
+  const isGate = !panel || !panel.querySelector('#auth-close');
+  if (isGate) { renderAuthGate(); } else { renderAuthPanel(); }
+}
+
+async function handleLogout() {
+  await sb.auth.signOut();
+  authUser = null;
+  diaryEntries = [];
+  updateAuthUI();
+  closeAuth();
+  // If diary panel was open, update it
+  const diaryOverlay = document.getElementById('diary-overlay');
+  if (diaryOverlay && diaryOverlay.classList.contains('open')) {
+    renderDiary();
+  }
+}
+
+document.getElementById('account-btn').addEventListener('click', openAuth);
+document.getElementById('auth-overlay').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAuth(); });
+
+// ===========================================================================
+// DIARY — localStorage (offline) + Supabase (logged in)
+// ===========================================================================
+let diaryEntries = [];
+let diaryEditing = null;
+
+async function loadDiary() {
+  if (!authUser || !sb) { diaryEntries = []; return; }
+  const { data, error } = await sb
+    .from('diary_entries').select('*')
+    .order('created_at', { ascending: false });
+  diaryEntries = (!error && data) ? data.map(r => ({ id: r.id, date: r.date, text: r.text })) : [];
+}
+
+function saveDiary() { /* saved to Supabase at entry level */ }
+
+async function deleteDiaryEntry(id) {
+  if (!confirm(t('diaryConfirmDelete'))) return;
+  if (authUser && sb) {
+    await sb.from('diary_entries').delete().eq('id', id);
+  }
+  diaryEntries = diaryEntries.filter(e => e.id !== id);
+  saveDiary();
+  diaryEditing = null;
+  renderDiary();
+}
+
+function renderDiary() {
+  const content = document.getElementById('diary-content');
+  if (!content) return;
+
+  if (diaryEditing === 'new') {
+    // New entry form
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' +
+      String(now.getMonth()+1).padStart(2,'0') + '-' +
+      String(now.getDate()).padStart(2,'0');
+    content.innerHTML =
+      '<p style="font-size:13px;color:#B0977A;margin-bottom:8px;">' + dateStr + '</p>' +
+      '<textarea class="diary-textarea" id="diary-textarea" placeholder="' + t('diaryPlaceholder') + '"></textarea>' +
+      '<div class="diary-btn-row">' +
+        '<button class="diary-btn-act diary-btn-save" id="diary-save-btn">' + t('diarySave') + '</button>' +
+        '<button class="diary-btn-act diary-btn-cancel" id="diary-cancel-btn">' + t('diaryCancel') + '</button>' +
+      '</div>';
+    document.getElementById('diary-save-btn').addEventListener('click', () => {
+      const text = document.getElementById('diary-textarea').value.trim();
+      if (!text) return;
+      const newEntry = { id: Date.now(), date: dateStr, text: text };
+      diaryEntries.unshift(newEntry);
+      saveDiary();
+      if (authUser && sb) {
+        sb.from('diary_entries').insert({
+          id: newEntry.id, user_id: authUser.id,
+          date: newEntry.date, text: newEntry.text
+        }).then(() => {});
+      }
+      diaryEditing = null;
+      renderDiary();
+    });
+    document.getElementById('diary-cancel-btn').addEventListener('click', () => {
+      diaryEditing = null;
+      renderDiary();
+    });
+  } else if (diaryEditing !== null) {
+    // View single entry
+    const entry = diaryEntries.find(e => e.id === diaryEditing);
+    if (!entry) { diaryEditing = null; renderDiary(); return; }
+    content.innerHTML =
+      '<button class="diary-btn-new" id="diary-back-btn">' + t('diaryBack') + '</button>' +
+      '<p style="font-size:13px;color:#B0977A;margin-bottom:8px;">' + entry.date + '</p>' +
+      '<div class="diary-full">' + entry.text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' +
+      '<div class="diary-btn-row" style="margin-top:16px;">' +
+        '<button class="diary-btn-act diary-btn-del" id="diary-del-btn">' + t('diaryDelete') + '</button>' +
+        '<button class="diary-btn-act diary-btn-cancel" id="diary-close-view-btn">' + t('diaryCancel') + '</button>' +
+      '</div>';
+    document.getElementById('diary-back-btn').addEventListener('click', () => { diaryEditing = null; renderDiary(); });
+    document.getElementById('diary-close-view-btn').addEventListener('click', () => { diaryEditing = null; renderDiary(); });
+    document.getElementById('diary-del-btn').addEventListener('click', () => deleteDiaryEntry(entry.id));
+  } else {
+    // List view
+    let html = '<button class="diary-btn-new" id="diary-new-btn">' + t('newDiary') + '</button>';
+    if (diaryEntries.length === 0) {
+      html += '<p style="text-align:center;color:#B0977A;padding:30px 0;">' + t('diaryNoEntries') + '</p>';
+    } else {
+      diaryEntries.forEach(e => {
+        const preview = e.text.length > 60 ? e.text.substring(0,60) + '...' : e.text;
+        html += '<div class="diary-entry" data-id="' + e.id + '">' +
+          '<div class="diary-entry-date">' + e.date + '</div>' +
+          '<div class="diary-entry-preview">' + preview.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>' +
+        '</div>';
+      });
+    }
+    content.innerHTML = html;
+    document.getElementById('diary-new-btn') && document.getElementById('diary-new-btn').addEventListener('click', () => {
+      diaryEditing = 'new';
+      renderDiary();
+    });
+    content.querySelectorAll('.diary-entry').forEach(el => {
+      el.addEventListener('click', () => {
+        diaryEditing = parseInt(el.dataset.id);
+        renderDiary();
+      });
+    });
+  }
+}
+
+// Diary Panel open/close
+document.getElementById('diary-btn').addEventListener('click', async () => {
+  if (!authUser) { openAuthGate(); return; }
+  document.getElementById('diary-overlay').classList.add('open');
+  // Show loading
+  const content = document.getElementById('diary-content');
+  if (content) content.innerHTML = '<p style=\"text-align:center;color:#B0977A;padding:40px 0;\">⏳ 加载中...</p>';
+  await loadDiary();
+  diaryEditing = null;
+  renderDiary();
+});
+document.getElementById('diary-close').addEventListener('click', () => {
+  document.getElementById('diary-overlay').classList.remove('open');
+});
+document.getElementById('diary-overlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) document.getElementById('diary-overlay').classList.remove('open');
+});
+
+// Initialize
+async function init() {
+  console.log('🎮 Happy Alaa starting...');
+  // Start Supabase async (don't block UI)
+  initSupabase();
+  // Preload images async (don't block UI)
+  preloadImages();
+  // Show UI immediately
+  const ls = document.getElementById('loading-screen');
+  if (ls) { ls.classList.add('hidden'); setTimeout(() => ls && ls.remove(), 300); }
+
+  // Auth gate: show login if Supabase configured and not logged in
+  if (sb) { openAuthGate(); }
+
+  // Register PWA service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').then(() => {
+      console.log('📦 Service Worker registered — offline ready!');
+    }).catch(() => {
+      console.log('Service Worker registration skipped');
+    });
+  }
+}
+
+init();
+
+// ===== MUSIC LIBRARY =====
+let musicVol=5,sfxVol=5;
+const SONGS=[
+  {f:'music/蔡依林-日不落.mp3', t:'日不落 - 蔡依林'},
+  {f:'music/Sunshine Girl.English Ver..-moumoon.mp3', t:'Sunshine Girl - moumoon'},
+];
+const MusicPlayer={a:null,cs:null,p:false,paused:false,
+load(i){if(i<0||i>=SONGS.length)return;this.stop();this.cs=SONGS[i];this.a=new Audio(this.cs.f);this.a.volume=musicVol/10;this.a.loop=false;this.a.onended=()=>{this.p=false;this.paused=false;updateSongUI();};this.a.play().catch(()=>{});this.p=true;this.paused=false;},
+stop(){if(this.a){this.a.pause();this.a=null;}this.p=false;this.paused=false;},
+pause(){if(!this.a||!this.p)return;this.a.pause();this.p=false;this.paused=true;},
+resume(){if(!this.a||!this.paused)return;this.a.play().catch(()=>{});this.p=true;this.paused=false;},
+toggle(i){const s=SONGS[i];const ws=this.cs===s;if(ws&&this.p){this.pause();}else if(ws&&this.paused){this.resume();}else if(!ws){this.stop();this.load(i);}updateSongUI();}
+};
+const SFX={ctx:null,init(){if(!this.ctx)this.ctx=new(window.AudioContext||window.webkitAudioContext)();},play(type){if(sfxVol===0)return;this.init();const ctx=this.ctx;if(ctx.state==='suspended')ctx.resume();const v=sfxVol/10;const g=ctx.createGain();g.gain.value=v*0.8;g.connect(ctx.destination);const t=ctx.currentTime;if(type==='pop'){for(let i=0;i<8;i++){const o=ctx.createOscillator();const eg=ctx.createGain();o.type='square';o.frequency.value=200+i*300+Math.random()*500;eg.gain.setValueAtTime(0.5,t+i*0.01);eg.gain.exponentialRampToValueAtTime(0.001,t+0.2);o.connect(eg);eg.connect(g);o.start(t+i*0.01);o.stop(t+0.25);}}else if(type==='explosion'){const o=ctx.createOscillator();const eg=ctx.createGain();o.type='sawtooth';o.frequency.setValueAtTime(100,t);o.frequency.exponentialRampToValueAtTime(20,t+0.3);eg.gain.setValueAtTime(0.6,t);eg.gain.exponentialRampToValueAtTime(0.001,t+0.4);o.connect(eg);eg.connect(g);o.start(t);o.stop(t+0.5);for(let i=0;i<6;i++){const no=ctx.createOscillator();const ng=ctx.createGain();no.type='square';no.frequency.value=50+Math.random()*200;ng.gain.setValueAtTime(0.3,t+i*0.03);ng.gain.exponentialRampToValueAtTime(0.001,t+0.3);no.connect(ng);ng.connect(g);no.start(t+i*0.03);no.stop(t+0.35);}}else if(type==='kick'){const o=ctx.createOscillator();const eg=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(300,t);o.frequency.exponentialRampToValueAtTime(30,t+0.12);eg.gain.setValueAtTime(0.5,t);eg.gain.exponentialRampToValueAtTime(0.001,t+0.18);o.connect(eg);eg.connect(g);o.start(t);o.stop(t+0.25);}}};
+document.getElementById('music-lib-btn').addEventListener('click',function(){document.getElementById('music-overlay').classList.add('open');});
+document.getElementById('music-close').addEventListener('click',function(){document.getElementById('music-overlay').classList.remove('open');});
+document.getElementById('music-overlay').addEventListener('click',function(e){if(e.target===e.currentTarget)document.getElementById('music-overlay').classList.remove('open');});
+(function(){var sl=document.getElementById('song-list');if(!sl)return;SONGS.forEach(function(s,i){var d=document.createElement('div');d.className='song-item';d.innerHTML='<div class="st">🎵 '+s.t+'</div>';d.addEventListener('click',function(){MusicPlayer.toggle(i);});sl.appendChild(d);});})();
+function updateSongUI(){var sl=document.getElementById('song-list');if(!sl)return;var items=sl.querySelectorAll('.song-item');items.forEach(function(d,i){d.classList.toggle('playing',MusicPlayer.p&&MusicPlayer.cs===SONGS[i]);d.classList.toggle('paused',MusicPlayer.paused&&MusicPlayer.cs===SONGS[i]);});}
+function buildVolBar(id,v,onChange){var bar=document.getElementById(id);if(!bar)return;for(var i=1;i<=10;i++){var b=document.createElement('button');b.className='vol-btn';b.textContent=i;if(i===v)b.classList.add('active');(function(idx){b.addEventListener('click',function(){Array.from(this.parentElement.children).forEach(function(c){c.classList.remove('active');});this.classList.add('active');onChange(idx);});})(i);bar.appendChild(b);}}
+setTimeout(function(){buildVolBar('music-vol-bar',musicVol,function(v){musicVol=v;if(MusicPlayer.a)MusicPlayer.a.volume=v/10;});buildVolBar('sfx-vol-bar',sfxVol,function(v){sfxVol=v;});},100);
+var musicMuted=false,sfxMuted=false,musicPrev=musicVol,sfxPrev=sfxVol;
+function toggleMute(type){var btn,volBar,curVol,prevVol,muted,onChange;if(type==='music'){btn=document.getElementById('music-mute-btn');volBar=document.getElementById('music-vol-bar');curVol=musicVol;muted=musicMuted;prevVol=musicPrev;onChange=function(v){musicVol=v;if(MusicPlayer.a)MusicPlayer.a.volume=v/10;};}else{btn=document.getElementById('sfx-mute-btn');volBar=document.getElementById('sfx-vol-bar');curVol=sfxVol;muted=sfxMuted;prevVol=sfxPrev;onChange=function(v){sfxVol=v;};}
+if(!muted){if(type==='music'){musicMuted=true;musicPrev=curVol;}else{sfxMuted=true;sfxPrev=curVol;}onChange(0);btn.textContent='🔇 已静音';btn.classList.add('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');});}else{if(type==='music'){musicMuted=false;}else{sfxMuted=false;}onChange(prevVol);btn.textContent='🔊 静音';btn.classList.remove('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');var v=parseInt(c.textContent);if(v===prevVol)c.classList.add('active');});}}
+document.getElementById('music-mute-btn').addEventListener('click',function(){toggleMute('music');});
+document.getElementById('sfx-mute-btn').addEventListener('click',function(){toggleMute('sfx');});
+
+</script>
+</body>
+</html>

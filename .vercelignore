@@ -1,0 +1,17 @@
+node_modules
+android
+ios
+www
+.git
+参考
+Refer to the gameplay.mp4
+game-icon.ico
+图标.ico
+address.txt
+BUILD_GUIDE.md
+build-apk.bat
+capacitor.config.json
+package.json
+package-lock.json
+HappyAlaaApp
+.claude
