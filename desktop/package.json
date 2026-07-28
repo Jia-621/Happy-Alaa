@@ -1,0 +1,38 @@
+{
+  "name": "happy-alaa-desktop",
+  "version": "1.0.0",
+  "description": "Happy Alaa - Desktop Window Edition",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.happyalaa.desktop",
+    "productName": "Happy Alaa",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "../game.html",
+      "../index.html",
+      "../manifest.json",
+      "../service-worker.js",
+      "../supabase-config.js",
+      "../Character Model/**/*",
+      "../music/**/*",
+      "../Princess Alaa/**/*",
+      "../game-icon.ico"
+    ],
+    "win": {
+      "icon": "../game-icon.ico",
+      "target": "portable"
+    }
+  }
+}
