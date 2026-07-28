@@ -576,9 +576,6 @@ body.rtl .music-sidebar-inner{animation:slideRight 0.3s ease-out;}
     <div class="loading-progress" id="loading-progress">加载中...</div>
   </div>
 
-  <!-- Hidden file input for avatar -->
-  <input type="file" id="avatar-input" accept="image/*" style="display:none;">
-
   <!-- Left sidebar (collapsible) -->
   <button class="my-btn sidebar-toggle" id="my-btn" data-i18n-title="mySection">
     <img src="Character Model/Blue-white/normal.png" id="avatar-img" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;border-radius:50%;">
@@ -1798,40 +1795,10 @@ function renderMyGrid(tab) {
   }
 }
 
-// My Panel open/close
-// my-btn toggles sidebar menu (short click) or change avatar (long press)
-let avatarPressTimer = null;
-const myBtn = document.getElementById('my-btn');
-myBtn.addEventListener('mousedown', () => { avatarPressTimer = setTimeout(openAvatarPicker, 800); });
-myBtn.addEventListener('mouseup', () => { clearTimeout(avatarPressTimer); });
-myBtn.addEventListener('mouseleave', () => { clearTimeout(avatarPressTimer); });
-myBtn.addEventListener('touchstart', (e) => { avatarPressTimer = setTimeout(openAvatarPicker, 800); }, {passive:true});
-myBtn.addEventListener('touchend', () => { clearTimeout(avatarPressTimer); });
-myBtn.addEventListener('touchmove', () => { clearTimeout(avatarPressTimer); });
-myBtn.addEventListener('click', (e) => {
-  // Short click: toggle sidebar (only if not a long press)
-  if (avatarPressTimer) { clearTimeout(avatarPressTimer); document.getElementById('sidebar-menu').classList.toggle('open'); }
+// My Panel open/close — short click toggles sidebar
+document.getElementById('my-btn').addEventListener('click', () => {
+  document.getElementById('sidebar-menu').classList.toggle('open');
 });
-
-function openAvatarPicker() {
-  document.getElementById('avatar-input').click();
-}
-document.getElementById('avatar-input').addEventListener('change', function() {
-  const file = this.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    document.getElementById('avatar-img').src = dataUrl;
-    localStorage.setItem('avatar', dataUrl);
-  };
-  reader.readAsDataURL(file);
-});
-// Restore saved avatar
-(function() {
-  const saved = localStorage.getItem('avatar');
-  if (saved) document.getElementById('avatar-img').src = saved;
-})();
 // Close sidebar when clicking outside
 document.addEventListener('click', (e) => {
   const sidebar = document.getElementById('sidebar-menu');
@@ -2145,16 +2112,8 @@ function setupLightboxZoom() {
 }
 
 // Princess Panel open/close
-document.getElementById('princess-btn').addEventListener('click', async () => {
+document.getElementById('princess-btn').addEventListener('click', () => {
   document.getElementById('princess-overlay').classList.add('open');
-  if (princessAllPhotos.length === 0) {
-    const result = await scanPrincessPhotos();
-    princessGroups = result.groups;
-    princessAllPhotos = result.all;
-    // Default to first group
-    const groupNames = Object.keys(princessGroups);
-    princessActiveGroup = groupNames.length > 0 ? groupNames[0] : '__ungrouped__';
-  }
   renderPrincessTabs();
   renderPrincessGrid();
 });
@@ -2575,6 +2534,15 @@ async function init() {
   initSupabase();
   // Preload images async (don't block UI)
   preloadImages();
+  // Pre-scan Princess Alaa photos (don't block UI)
+  scanPrincessPhotos().then(result => {
+    princessGroups = result.groups;
+    princessAllPhotos = result.all;
+    if (Object.keys(princessGroups).length > 0) {
+      princessActiveGroup = Object.keys(princessGroups)[0];
+    }
+    console.log('👑 Princess photos ready:', princessAllPhotos.length);
+  });
   // Show UI immediately
   const ls = document.getElementById('loading-screen');
   if (ls) { ls.classList.add('hidden'); setTimeout(() => ls && ls.remove(), 300); }
