@@ -4,3 +4,4 @@ _archive/
 .claude/
 *.lnk
 .github/workflows/
+.env*
