@@ -6,7 +6,7 @@
 
 | 平台 | 地址 |
 |------|------|
-| 🌐 **GitHub Pages** | **https://jialufei-joseph.github.io/Happy-Alaa/** |
+| 🌐 **GitHub Pages** | **https://Jia-621.github.io/Happy-Alaa/** |
 | 🌐 **Vercel** | **https://happy-alaa.vercel.app** |
 
 所有平台均可通过浏览器直接打开上方链接游玩！
@@ -24,7 +24,7 @@ All platforms can play directly via the links above!
 | 📥 **桌面版下载** | Electron 打包版（`_archive/DesktopAlaa/桌面Alaa.exe`） |
 
 ```
-GitHub Pages: https://jialufei-joseph.github.io/Happy-Alaa/
+GitHub Pages: https://Jia-621.github.io/Happy-Alaa/
 Vercel:      https://happy-alaa.vercel.app
 桌面程序:     _archive/DesktopAlaa/桌面Alaa.exe
 ```
@@ -40,7 +40,7 @@ Vercel:      https://happy-alaa.vercel.app
 | 📥 **APK 下载** | 使用 `build-apk.bat` 自行编译，或访问 GitHub Releases 页面下载 |
 
 ```
-GitHub Pages: https://jialufei-joseph.github.io/Happy-Alaa/
+GitHub Pages: https://Jia-621.github.io/Happy-Alaa/
 Vercel:      https://happy-alaa.vercel.app
 PWA 安装:     Chrome → ⋮ → 添加到主屏幕
 APK 编译:     运行 build-apk.bat
@@ -57,7 +57,7 @@ APK 编译:     运行 build-apk.bat
 | 📥 **IPA 下载** | 需 Mac + Xcode，使用 `ios/` 项目自行编译 |
 
 ```
-GitHub Pages: https://jialufei-joseph.github.io/Happy-Alaa/
+GitHub Pages: https://Jia-621.github.io/Happy-Alaa/
 Vercel:      https://happy-alaa.vercel.app
 PWA 安装:     Safari → 分享 → 添加到主屏幕
 ```
@@ -68,16 +68,16 @@ PWA 安装:     Safari → 分享 → 添加到主屏幕
 
 | 平台 Platform | 在线 Online ① | 在线 Online ② | 下载 Download |
 |---------------|---------------|---------------|---------------|
-| 💻 Windows | [GitHub Pages](https://jialufei-joseph.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | `_archive/DesktopAlaa/桌面Alaa.exe` |
-| 🤖 Android | [GitHub Pages](https://jialufei-joseph.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | 运行 `build-apk.bat` 编译 |
-| 🍎 iOS | [GitHub Pages](https://jialufei-joseph.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | Xcode 编译 `ios/` 项目 |
+| 💻 Windows | [GitHub Pages](https://Jia-621.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | `_archive/DesktopAlaa/桌面Alaa.exe` |
+| 🤖 Android | [GitHub Pages](https://Jia-621.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | 运行 `build-apk.bat` 编译 |
+| 🍎 iOS | [GitHub Pages](https://Jia-621.github.io/Happy-Alaa/) | [Vercel](https://happy-alaa.vercel.app) | Xcode 编译 `ios/` 项目 |
 
 ---
 
 ## 🌍 中文说明
 
 ### 在线游玩（推荐）
-- **GitHub Pages**：https://jialufei-joseph.github.io/Happy-Alaa/
+- **GitHub Pages**：https://Jia-621.github.io/Happy-Alaa/
 - **Vercel**：https://happy-alaa.vercel.app
 
 直接用手机或电脑浏览器打开即可，无需下载安装。
@@ -97,7 +97,7 @@ PWA 安装:     Safari → 分享 → 添加到主屏幕
 ## 🌍 English
 
 ### Play Online (Recommended)
-- **GitHub Pages**: https://jialufei-joseph.github.io/Happy-Alaa/
+- **GitHub Pages**: https://Jia-621.github.io/Happy-Alaa/
 - **Vercel**: https://happy-alaa.vercel.app
 
 Open directly in your browser — no download needed.
@@ -117,7 +117,7 @@ Open directly in your browser — no download needed.
 ## 🌍 العربية
 
 ### العب عبر الإنترنت (موصى به)
-- **GitHub Pages**: https://jialufei-joseph.github.io/Happy-Alaa/
+- **GitHub Pages**: https://Jia-621.github.io/Happy-Alaa/
 - **Vercel**: https://happy-alaa.vercel.app
 
 افتح مباشرة في متصفحك — لا حاجة للتنزيل.
