@@ -607,14 +607,14 @@ body.rtl .music-sidebar-inner{animation:slideRight 0.3s ease-out;}
   <div class="music-sidebar" id="music-overlay">
     <div class="music-sidebar-inner">
       <button class="my-close" id="music-close">✕</button>
-      <h3 style="text-align:center;margin-bottom:10px;color:#4A3728;">🎵 音乐库</h3>
+      <h3 style="text-align:center;margin-bottom:10px;color:#4A3728;" data-i18n="musicLibrary">🎵 音乐库</h3>
       <div id="song-list" style="display:flex;flex-direction:column;gap:6px;"></div>
-      <p style="font-size:11px;color:#999;margin:12px 0 4px;">Music Volume</p>
+      <p style="font-size:11px;color:#999;margin:12px 0 4px;" data-i18n="musicVolume">Music Volume</p>
       <div class="vol-grid" id="music-vol-bar"></div>
-      <button class="mute-btn" id="music-mute-btn">🔊 静音</button>
-      <p style="font-size:11px;color:#999;margin:12px 0 4px;">Action SFX</p>
+      <button class="mute-btn" id="music-mute-btn" data-i18n="mute">🔊 静音</button>
+      <p style="font-size:11px;color:#999;margin:12px 0 4px;" data-i18n="sfxVolume">SFX Volume</p>
       <div class="vol-grid" id="sfx-vol-bar"></div>
-      <button class="mute-btn" id="sfx-mute-btn">🔊 静音</button>
+      <button class="mute-btn" id="sfx-mute-btn" data-i18n="mute">🔊 静音</button>
     </div>
   </div>
 
@@ -787,6 +787,33 @@ const I18N = {
     diaryConfirmDelete: '确定要删除这篇日记吗？',
     diaryBack: '← 返回列表',
     longAlaa: '龙Alaa',
+    // Music
+    musicLibrary: '🎵 音乐库',
+    musicVolume: '音乐音量',
+    sfxVolume: '音效音量',
+    mute: '🔊 静音',
+    unmute: '🔇 取消静音',
+    // Auth
+    login: '登录',
+    register: '注册',
+    forgotPassword: '忘记密码？',
+    sendResetEmail: '发送重置邮件',
+    backToLogin: '← 返回登录',
+    emailPlaceholder: '邮箱地址',
+    passwordPlaceholder: '密码（至少6位）',
+    forgotPwPlaceholder: '请输入注册邮箱',
+    rememberPassword: '记住密码',
+    loggedInTitle: '已登录',
+    notLoggedIn: '未登录 - 点击登录',
+    logout: '退出登录',
+    fillEmailAndPassword: '请填写邮箱和密码',
+    passwordMin6: '密码至少6位',
+    emailRegistered: '该邮箱已注册，请直接登录',
+    verificationEmailSent: '验证邮件已发送，请检查邮箱并点击链接完成注册',
+    passwordResetSent: '重置邮件已发送，请检查邮箱',
+    sendFailed: '发送失败：',
+    dataSyncedToCloud: '登录后数据云端同步',
+    authErrorLogin: '邮箱或密码错误',
   },
   en: {
     title: 'Happy Alaa',
@@ -838,6 +865,33 @@ const I18N = {
     diaryConfirmDelete: 'Are you sure you want to delete this entry?',
     diaryBack: '← Back',
     longAlaa: 'Dragon Alaa',
+    // Music
+    musicLibrary: '🎵 Music Library',
+    musicVolume: 'Music Volume',
+    sfxVolume: 'SFX Volume',
+    mute: '🔊 Mute',
+    unmute: '🔇 Unmute',
+    // Auth
+    login: 'Login',
+    register: 'Register',
+    forgotPassword: 'Forgot password?',
+    sendResetEmail: 'Send Reset Email',
+    backToLogin: '← Back to Login',
+    emailPlaceholder: 'Email address',
+    passwordPlaceholder: 'Password (min 6 characters)',
+    forgotPwPlaceholder: 'Enter registered email',
+    rememberPassword: 'Remember me',
+    loggedInTitle: 'Logged In',
+    notLoggedIn: 'Not logged in - Click to login',
+    logout: 'Logout',
+    fillEmailAndPassword: 'Please fill in email and password',
+    passwordMin6: 'Password must be at least 6 characters',
+    emailRegistered: 'This email is already registered, please login directly',
+    verificationEmailSent: 'Verification email sent. Check your inbox and click the link.',
+    passwordResetSent: 'Password reset email sent. Check your inbox.',
+    sendFailed: 'Send failed: ',
+    dataSyncedToCloud: 'Data syncs to cloud after login',
+    authErrorLogin: 'Invalid email or password',
   },
   ar: {
     title: 'الاء السعيد',
@@ -889,6 +943,33 @@ const I18N = {
     diaryConfirmDelete: 'هل أنت متأكد من حذف هذا الإدخال؟',
     diaryBack: '← رجوع',
     longAlaa: 'تنين الاء',
+    // Music
+    musicLibrary: '🎵 مكتبة الموسيقى',
+    musicVolume: 'مستوى صوت الموسيقى',
+    sfxVolume: 'مستوى صوت المؤثرات',
+    mute: '🔊 كتم الصوت',
+    unmute: '🔇 إلغاء كتم الصوت',
+    // Auth
+    login: 'تسجيل الدخول',
+    register: 'تسجيل',
+    forgotPassword: 'نسيت كلمة المرور؟',
+    sendResetEmail: 'إرسال بريد إعادة التعيين',
+    backToLogin: '← العودة لتسجيل الدخول',
+    emailPlaceholder: 'عنوان البريد الإلكتروني',
+    passwordPlaceholder: 'كلمة المرور (6 أحرف على الأقل)',
+    forgotPwPlaceholder: 'أدخل البريد الإلكتروني المسجل',
+    rememberPassword: 'تذكر كلمة المرور',
+    loggedInTitle: 'تم تسجيل الدخول',
+    notLoggedIn: 'لم تسجل الدخول - اضغط للدخول',
+    logout: 'تسجيل الخروج',
+    fillEmailAndPassword: 'يرجى ملء البريد الإلكتروني وكلمة المرور',
+    passwordMin6: 'كلمة المرور 6 أحرف على الأقل',
+    emailRegistered: 'هذا البريد مسجل بالفعل، يرجى تسجيل الدخول',
+    verificationEmailSent: 'تم إرسال بريد التحقق. تفقد صندوق الوارد.',
+    passwordResetSent: 'تم إرسال بريد إعادة التعيين. تفقد صندوق الوارد.',
+    sendFailed: 'فشل الإرسال: ',
+    dataSyncedToCloud: 'تتم مزامنة البيانات مع السحابة بعد تسجيل الدخول',
+    authErrorLogin: 'بريد إلكتروني أو كلمة مرور غير صالحة',
   }
 };
 
@@ -2208,11 +2289,11 @@ function renderAuthGate() {
     panel.innerHTML =
       '<div style="text-align:center;margin-bottom:14px;">' +
         '<p style="font-size:36px;margin-bottom:6px;">🔑</p>' +
-        '<p style="font-size:16px;font-weight:800;color:#4A3728;">找回密码</p>' +
+        '<p style="font-size:16px;font-weight:800;color:#4A3728;">' + t('forgotPassword').replace('？','') + '</p>' +
       '</div>' +
-      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="请输入注册邮箱" autocomplete="email">' +
-      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">发送重置邮件</button>' +
-      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">← 返回登录</p>' +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="' + t('forgotPwPlaceholder') + '" autocomplete="email">' +
+      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">' + t('sendResetEmail') + '</button>' +
+      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">' + t('backToLogin') + '</p>' +
       '<div class="auth-error" id="auth-error">' + authError + '</div>';
     document.getElementById('auth-submit-btn').addEventListener('click', handleForgotPassword);
     document.getElementById('auth-back-login').addEventListener('click', () => { authMode='login'; authError=''; renderAuthGate(); });
@@ -2222,17 +2303,17 @@ function renderAuthGate() {
     '<div style="text-align:center;margin-bottom:14px;">' +
       '<p style="font-size:36px;margin-bottom:6px;">🎮</p>' +
       '<p style="font-size:18px;font-weight:800;color:#4A3728;">Happy Alaa</p>' +
-      '<p style="font-size:13px;color:#B0977A;">登录后数据云端同步</p>' +
+      '<p style="font-size:13px;color:#B0977A;">' + t('dataSyncedToCloud') + '</p>' +
     '</div>' +
     '<div class="auth-tabs">' +
-      '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">登录</button>' +
-      '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">注册</button>' +
+      '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">' + t('login') + '</button>' +
+      '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">' + t('register') + '</button>' +
     '</div>' +
-    '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="邮箱地址" autocomplete="email">' +
-    '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="密码（至少6位）" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
-    '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?'登录':'注册') + '</button>' +
-    (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> 记住密码</label>' : '') +
-    (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">忘记密码？</p>' : '') +
+    '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="' + t('emailPlaceholder') + '" autocomplete="email">' +
+    '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="' + t('passwordPlaceholder') + '" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
+    '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?t('login'):t('register')) + '</button>' +
+    (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> ' + t('rememberPassword') + '</label>' : '') +
+    (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">' + t('forgotPassword') + '</p>' : '') +
     '<div class="auth-error" id="auth-error">' + authError + '</div>';
   // Pre-fill saved credentials
   const saved = getSavedLogin();
@@ -2261,10 +2342,10 @@ function renderAuthPanel() {
       '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
       '<div class="auth-user-info">' +
         '<p style="font-size:40px;margin-bottom:8px;">✅</p>' +
-        '<p style="font-size:16px;font-weight:700;color:#4A3728;margin-bottom:4px;">已登录</p>' +
+        '<p style="font-size:16px;font-weight:700;color:#4A3728;margin-bottom:4px;">' + t('loggedInTitle') + '</p>' +
         '<p class="auth-user-email">' + authUser.email + '</p>' +
-        '<p style="font-size:12px;color:#4ECDC4;margin-bottom:14px;">📡 日记已云端同步</p>' +
-        '<button class="auth-logout" id="auth-logout-btn">退出登录</button>' +
+        '<p style="font-size:12px;color:#4ECDC4;margin-bottom:14px;">📡 ' + t('dataSyncedToCloud') + '</p>' +
+        '<button class="auth-logout" id="auth-logout-btn">' + t('logout') + '</button>' +
       '</div>';
     document.getElementById('auth-close').addEventListener('click', closeAuth);
     document.getElementById('auth-logout-btn').addEventListener('click', handleLogout);
@@ -2273,11 +2354,11 @@ function renderAuthPanel() {
       '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
       '<div style="text-align:center;margin-bottom:14px;">' +
         '<p style="font-size:36px;margin-bottom:6px;">🔑</p>' +
-        '<p style="font-size:16px;font-weight:800;color:#4A3728;">找回密码</p>' +
+        '<p style="font-size:16px;font-weight:800;color:#4A3728;">' + t('forgotPassword').replace('？','') + '</p>' +
       '</div>' +
-      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="请输入注册邮箱" autocomplete="email">' +
-      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">发送重置邮件</button>' +
-      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">← 返回登录</p>' +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="' + t('forgotPwPlaceholder') + '" autocomplete="email">' +
+      '<button class="auth-submit" id="auth-submit-btn" style="margin-bottom:10px;">' + t('sendResetEmail') + '</button>' +
+      '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;" id="auth-back-login">' + t('backToLogin') + '</p>' +
       '<div class="auth-error" id="auth-error">' + authError + '</div>';
     document.getElementById('auth-close').addEventListener('click', closeAuth);
     document.getElementById('auth-submit-btn').addEventListener('click', handleForgotPassword);
@@ -2286,14 +2367,14 @@ function renderAuthPanel() {
     panel.innerHTML =
       '<button class="my-close" style="position:sticky;top:0;float:right;z-index:5;width:32px;height:32px;border-radius:50%;border:none;background:#EEE;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-bottom:-30px;" id="auth-close">✕</button>' +
       '<div class="auth-tabs">' +
-        '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">登录</button>' +
-        '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">注册</button>' +
+        '<button class="auth-tab ' + (authMode==='login'?'active':'') + '" id="auth-tab-login">' + t('login') + '</button>' +
+        '<button class="auth-tab ' + (authMode==='register'?'active':'') + '" id="auth-tab-register">' + t('register') + '</button>' +
       '</div>' +
-      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="邮箱地址" autocomplete="email">' +
-      '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="密码（至少6位）" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
-      '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?'登录':'注册') + '</button>' +
-      (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> 记住密码</label>' : '') +
-      (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">忘记密码？</p>' : '') +
+      '<input class="auth-input" id="auth-email" name="email" type="email" placeholder="' + t('emailPlaceholder') + '" autocomplete="email">' +
+      '<input class="auth-input" id="auth-password" name="password" type="password" placeholder="' + t('passwordPlaceholder') + '" autocomplete="' + (authMode==='login'?'current-password':'new-password') + '">' +
+      '<button class="auth-submit" id="auth-submit-btn">' + (authMode==='login'?t('login'):t('register')) + '</button>' +
+      (authMode==='login' ? '<label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#8B7355;margin-top:8px;cursor:pointer;"><input type="checkbox" id="auth-remember" style="width:16px;height:16px;"> ' + t('rememberPassword') + '</label>' : '') +
+      (authMode==='login' ? '<p style="text-align:center;font-size:13px;color:#8B7355;cursor:pointer;text-decoration:underline;margin-top:6px;" id="auth-forgot-link">' + t('forgotPassword') + '</p>' : '') +
       '<div class="auth-error" id="auth-error">' + authError + '</div>';
     const saved = getSavedLogin();
     if (saved && authMode === 'login') {
@@ -2321,12 +2402,12 @@ function updateAuthUI() {
     btn.textContent = '✅';
     btn.style.background = '#4ECDC4';
     btn.style.color = 'white';
-    btn.title = authUser.email + ' - 已登录';
+    btn.title = authUser.email + ' - ' + t('loggedInTitle');
   } else {
     btn.textContent = '🔒';
     btn.style.background = 'rgba(255,255,255,0.9)';
     btn.style.color = '';
-    btn.title = '未登录 - 点击登录';
+    btn.title = t('notLoggedIn');
   }
 }
 
@@ -2335,25 +2416,25 @@ async function handleAuthSubmit() {
   if (authBusy) return;
   const email = document.getElementById('auth-email').value.trim();
   const password = document.getElementById('auth-password').value;
-  if (!email || !password) { authError = '请填写邮箱和密码'; renderCurrent(); return; }
-  if (password.length < 6) { authError = '密码至少6位'; renderCurrent(); return; }
+  if (!email || !password) { authError = t('fillEmailAndPassword'); renderCurrent(); return; }
+  if (password.length < 6) { authError = t('passwordMin6'); renderCurrent(); return; }
   authBusy = true;
 
   if (authMode === 'register') {
     const result = await sb.auth.signUp({ email, password });
     if (result.error) {
       authError = result.error.message.includes('already registered') || result.error.message.includes('already exists')
-        ? '该邮箱已注册，请直接登录' : result.error.message;
+        ? t('emailRegistered') : result.error.message;
     } else if (result.data.session) {
       authUser = result.data.user; updateAuthUI(); authBusy = false; return;
     } else {
-      authError = '验证邮件已发送，请检查邮箱并点击链接完成注册';
+      authError = t('verificationEmailSent');
     }
   } else {
     const result = await sb.auth.signInWithPassword({ email, password });
     if (result.error) {
       authError = result.error.message.includes('Invalid login')
-        ? '邮箱或密码错误' : (result.error.message.includes('Email not confirmed') ? '邮箱未验证，请先检查邮箱验证链接' : result.error.message);
+        ? t('authErrorLogin') : (result.error.message.includes('Email not confirmed') ? t('verificationEmailSent') : result.error.message);
     } else {
       // Save credentials if "remember me" checked
       const rm = document.getElementById('auth-remember');
@@ -2368,13 +2449,13 @@ async function handleAuthSubmit() {
 async function handleForgotPassword() {
   if (authBusy) return;
   const email = document.getElementById('auth-email').value.trim();
-  if (!email) { authError = '请输入注册邮箱'; renderCurrent(); return; }
+  if (!email) { authError = t('forgotPwPlaceholder'); renderCurrent(); return; }
   authBusy = true;
   const result = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
   if (result.error) {
-    authError = '发送失败：' + result.error.message;
+    authError = t('sendFailed') + result.error.message;
   } else {
-    authError = '重置邮件已发送，请检查邮箱';
+    authError = t('passwordResetSent');
   }
   authBusy = false;
   renderCurrent();
@@ -2585,7 +2666,7 @@ function buildVolBar(id,v,onChange){var bar=document.getElementById(id);if(!bar)
 setTimeout(function(){buildVolBar('music-vol-bar',musicVol,function(v){musicVol=v;if(MusicPlayer.a)MusicPlayer.a.volume=v/10;});buildVolBar('sfx-vol-bar',sfxVol,function(v){sfxVol=v;});},100);
 var musicMuted=false,sfxMuted=false,musicPrev=musicVol,sfxPrev=sfxVol;
 function toggleMute(type){var btn,volBar,curVol,prevVol,muted,onChange;if(type==='music'){btn=document.getElementById('music-mute-btn');volBar=document.getElementById('music-vol-bar');curVol=musicVol;muted=musicMuted;prevVol=musicPrev;onChange=function(v){musicVol=v;if(MusicPlayer.a)MusicPlayer.a.volume=v/10;};}else{btn=document.getElementById('sfx-mute-btn');volBar=document.getElementById('sfx-vol-bar');curVol=sfxVol;muted=sfxMuted;prevVol=sfxPrev;onChange=function(v){sfxVol=v;};}
-if(!muted){if(type==='music'){musicMuted=true;musicPrev=curVol;}else{sfxMuted=true;sfxPrev=curVol;}onChange(0);btn.textContent='🔇 已静音';btn.classList.add('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');});}else{if(type==='music'){musicMuted=false;}else{sfxMuted=false;}onChange(prevVol);btn.textContent='🔊 静音';btn.classList.remove('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');var v=parseInt(c.textContent);if(v===prevVol)c.classList.add('active');});}}
+if(!muted){if(type==='music'){musicMuted=true;musicPrev=curVol;}else{sfxMuted=true;sfxPrev=curVol;}onChange(0);btn.setAttribute('data-i18n','unmute');btn.textContent=t('unmute');btn.classList.add('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');});}else{if(type==='music'){musicMuted=false;}else{sfxMuted=false;}onChange(prevVol);btn.setAttribute('data-i18n','mute');btn.textContent=t('mute');btn.classList.remove('muted');volBar.querySelectorAll('.vol-btn').forEach(function(c){c.classList.remove('active');var v=parseInt(c.textContent);if(v===prevVol)c.classList.add('active');});}}
 document.getElementById('music-mute-btn').addEventListener('click',function(){toggleMute('music');});
 document.getElementById('sfx-mute-btn').addEventListener('click',function(){toggleMute('sfx');});
 
