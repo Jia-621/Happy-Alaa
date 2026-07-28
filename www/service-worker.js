@@ -1,10 +1,9 @@
-// Happy Alaa Service Worker — enables offline play and PWA install
-const CACHE_NAME = 'happy-alaa-v1';
+// Happy Alaa Service Worker — v17
+const CACHE_NAME = 'happy-alaa-v17';
 
 const FILES_TO_CACHE = [
   './game.html',
   './manifest.json',
-  // Character models
   'Character Model/Blue-white/normal.png',
   'Character Model/Blue-white/sad.png',
   'Character Model/Blue-white/happy.png',
@@ -34,7 +33,9 @@ const FILES_TO_CACHE = [
   'Character Model/Brown-white/special background.png',
 ];
 
+// Install: cache assets, take over immediately
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return Promise.allSettled(
@@ -46,20 +47,36 @@ self.addEventListener('install', (event) => {
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+// Activate: claim all clients, delete old caches
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    (async () => {
+      await clients.claim();
+      const keys = await caches.keys();
+      await Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)));
+    })()
   );
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
+// Network-first for HTML, cache-first for everything else
+self.addEventListener('fetch', (event) => {
+  const req = event.request;
+  if (req.method !== 'GET') return;
+
+  // HTML files: always try network first
+  if (req.headers.get('accept') && req.headers.get('accept').includes('text/html')) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Other assets: cache-first
+  event.respondWith(
+    caches.match(req).then((cached) => cached || fetch(req))
   );
 });
