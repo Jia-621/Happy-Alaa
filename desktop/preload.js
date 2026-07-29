@@ -1,7 +1,8 @@
-// Preload script — exposes safe APIs to the renderer
-const { contextBridge } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
   isDesktop: true,
-  platform: process.platform
+  platform: process.platform,
+  openGame: () => ipcRenderer.send('open-game'),
+  petContextMenu: () => ipcRenderer.send('pet-context-menu'),
 });

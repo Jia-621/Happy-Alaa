@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Happy Alaa">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-ios.png">
 <link rel="manifest" href="manifest.json">
 <title>Happy Alaa - 开心阿拉</title>
 <style>
@@ -974,7 +974,7 @@ const I18N = {
   }
 };
 
-let currentLang = 'zh';
+let currentLang = 'ar';
 const BLUE_PATH = 'Character Model/Blue-white/';
 const PINK_PATH = 'Character Model/Pink-white/';
 const BEST_PATH = 'Character Model/Best_friend/';
@@ -1410,12 +1410,8 @@ function setLang(lang) {
   }
 }
 
-// Detect browser language
-const browserLang = navigator.language || '';
-const defaultLang = browserLang.startsWith('zh') ? 'zh'
-  : browserLang.startsWith('ar') ? 'ar'
-  : 'en';
-setLang(defaultLang);
+// Always default to Arabic; user can switch via language buttons
+setLang('ar');
 
 // Language button clicks
 document.querySelectorAll('.lang-btn').forEach(btn => {

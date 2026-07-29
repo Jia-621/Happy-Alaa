@@ -5,3 +5,4 @@ _archive/
 *.lnk
 .github/workflows/
 .env*
+desktop/userdata/

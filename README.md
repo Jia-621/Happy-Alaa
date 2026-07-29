@@ -1,92 +1,6 @@
-# 🎀 Happy Alaa — 开心阿拉 — الاء السعيد
+# 🎀 Happy Alaa — 开心阿拉 — الاء السعيدة
 
-> 一个温馨的情感互动游戏 | A Heartwarming Emotion Interactive Game | لعبة تفاعلية عاطفية دافئة
-
----
-
-## 📖 中文
-
-### 游戏介绍
-
-**Happy Alaa（开心阿拉）** 是一款温馨的情感互动游戏。主角 **Alaa** 是一个可爱的卡通角色，她会根据你的情绪选择做出不同的反应。当你感到伤心、开心、生气或疲惫时，Alaa 都会陪伴在你身边，用温暖的动画和互动来安慰你、逗你开心。
-
-### 四种情绪模式
-
-| 模式 | 图标 | 描述 |
-|------|------|------|
-| 😢 **伤心** | 蓝色 | Alaa 的好朋友会走过来安慰她，吹气球、转圈圈，直到 Alaa 重新露出笑容 |
-| 😊 **开心** | 黄色 | Alaa 和她最好的朋友 Zo 一起蹦跳、击掌，洒满爱心和星星 |
-| 😡 **生气** | 红色 | Alaa 生气地跺脚、踢足球，等情绪发泄完后慢慢平静下来 |
-| 😴 **劳累** | 紫色 | Alaa 感到疲惫，夜色降临，星星闪烁，她需要好好休息一下 |
-
-### 特色功能
-
-- 👗 **衣橱柜**：更换 Alaa 的服装和外观（蓝白、粉白、黑黑、黑白、棕白等多种配色）
-- 🎵 **音乐库**：内置背景音乐播放器，支持音量调节和静音
-- 📝 **日记**：记录每天的心情日记
-- 👑 **公主 Alaa**：浏览 Alaa 的照片画廊，支持双指缩放
-- 🌐 **三语切换**：中文、English、العربية 随时切换
-- 📱 **PWA 支持**：可在手机浏览器中安装为独立 App
-- 🔑 **账号系统**：基于 Supabase 的登录注册功能
-
-### 如何游玩
-
-1. 打开 `game.html` 或在浏览器中访问部署好的网页
-2. 在首页选择你当前的情绪（伤心/开心/生气/劳累）
-3. 观看 Alaa 为你表演的动画
-4. 使用左侧菜单探索衣橱、音乐、日记等功能
-5. 点击顶部语言按钮切换中文/English/العربية
-
-### 技术栈
-
-- 纯 HTML/CSS/JavaScript（无需框架）
-- Capacitor（Android / iOS 打包）
-- Electron（Windows 桌面版）
-- Supabase（用户认证）
-- Service Worker（离线 PWA 支持）
-
----
-
-## 📖 English
-
-### Introduction
-
-**Happy Alaa** is a heartwarming emotion-interactive game. The main character **Alaa** is a cute cartoon character who responds differently based on your emotional state. Whether you're feeling sad, happy, angry, or tired, Alaa stays by your side with warm animations and interactions to comfort and cheer you up.
-
-### Four Emotion Modes
-
-| Mode | Icon | Description |
-|------|------|-------------|
-| 😢 **Sad** | Blue | Alaa's good friend comes over to cheer her up — blowing balloons, circling around, until Alaa smiles again |
-| 😊 **Happy** | Yellow | Alaa and her best friend Zo bounce together, high-five, and fill the screen with hearts and stars |
-| 😡 **Angry** | Red | Alaa stomps angrily and kicks a soccer ball around. After venting, she gradually calms down |
-| 😴 **Tired** | Purple | Alaa feels exhausted. Night falls, stars twinkle — it's time for a good rest |
-
-### Features
-
-- 👗 **Wardrobe**: Change Alaa's outfit and color scheme (Blue-white, Pink-white, Black-black, Black-white, Brown-white, and more)
-- 🎵 **Music Library**: Built-in background music player with volume control and mute
-- 📝 **Diary**: Write daily mood journals
-- 👑 **Princess Alaa**: Browse Alaa's photo gallery with pinch-to-zoom support
-- 🌐 **Trilingual**: Switch between 中文, English, and العربية anytime
-- 📱 **PWA Support**: Install as a standalone app from your mobile browser
-- 🔑 **Account System**: Supabase-based login and registration
-
-### How to Play
-
-1. Open `game.html` or visit the deployed web page
-2. On the home screen, choose your current mood (Sad / Happy / Angry / Tired)
-3. Watch the animation Alaa performs for you
-4. Use the left sidebar to explore wardrobe, music, diary, and more
-5. Tap the language buttons at the top to switch languages
-
-### Tech Stack
-
-- Vanilla HTML/CSS/JavaScript (no framework)
-- Capacitor (Android / iOS packaging)
-- Electron (Windows desktop app)
-- Supabase (user authentication)
-- Service Worker (offline PWA support)
+> لعبة تفاعلية عاطفية + علاء المكتب | 一个温馨的情感互动游戏 + 桌面Alaa | A Heartwarming Emotion Interactive Game + Desktop Alaa
 
 ---
 
@@ -94,74 +8,214 @@
 
 ### مقدمة
 
-**الاء السعيد (Happy Alaa)** هي لعبة تفاعلية عاطفية دافئة. الشخصية الرئيسية **الاء** هي شخصية كرتونية لطيفة تستجيب بشكل مختلف حسب حالتك العاطفية. سواء كنت تشعر بالحزن أو السعادة أو الغضب أو التعب، تبقى الاء بجانبك برسوم متحركة دافئة وتفاعلات لتهدئتك وإسعادك.
+**الاء السعيدة** هي لعبة تفاعلية عاطفية دافئة مع شخصية كرتونية لطيفة. تتضمن أيضًا **وضع علاء المكتب** — الاء يمكنها العيش على سطح مكتبك!
 
-### أربعة أوضاع عاطفية
+### الأوضاع العاطفية
 
-| الوضع | الأيقونة | الوصف |
-|------|------|-------------|
-| 😢 **حزين** | أزرق | تأتي صديقة الاء المقربة لتشجيعها — تنفخ البالونات وتدور حولها حتى تبتسم الاء مرة أخرى |
-| 😊 **سعيد** | أصفر | الاء وصديقتها المفضلة زو تقفزان معًا وتتصافحان وتملآن الشاشة بالقلوب والنجوم |
-| 😡 **غاضب** | أحمر | الاء تدوس بغضب وتركل كرة القدم. بعد التنفيس عن غضبها، تهدأ تدريجيًا |
-| 😴 **متعب** | بنفسجي | الاء تشعر بالإرهاق. يحل الليل وتتلألأ النجوم — حان وقت الراحة |
+| الوضع | الوصف |
+|------|------|
+| 😢 **حزين** | تأتي صديقة الاء لتشجيعها حتى تبتسم مرة أخرى |
+| 😊 **سعيد** | الاء وصديقتها زو تقفزان مع القلوب والنجوم |
+| 😡 **غاضب** | الاء تدوس بغضب ثم تهدأ تدريجيًا |
+| 😴 **متعب** | يحل الليل والاء تحتاج للراحة |
 
-### الميزات
+### وضع علاء المكتب 🐱
 
-- 👗 **خزانة الملابس**: تغيير مظهر الاء وألوانها (أبيض-أزرق، أبيض-وردي، أسود-أسود، أسود-أبيض، أبيض-بني والمزيد)
-- 🎵 **مكتبة الموسيقى**: مشغل موسيقى مدمج مع التحكم في مستوى الصوت وكتم الصوت
-- 📝 **مذكرات**: كتابة يوميات المزاج اليومية
-- 👑 **الأميرة الاء**: تصفح معرض صور الاء مع دعم التكبير بالضغط
-- 🌐 **ثلاث لغات**: التبديل بين 中文 و English و العربية في أي وقت
-- 📱 **دعم PWA**: التثبيت كتطبيق مستقل من متصفح الهاتف المحمول
-- 🔑 **نظام الحساب**: تسجيل الدخول والتسجيل عبر Supabase
+استدعِ من القائمة **علاء المكتب**:
 
-### كيفية اللعب
+| التفاعل | الوظيفة |
+|---------|---------|
+| **نقر مزدوج** | إيموجي عشوائي |
+| **نقر يمين** | قائمة: افتح اللعبة / تصغير / تغيير الحالة / أكل / نوم |
+| **سحب** | امسك المساحة الفارغة حول الاء للتحريك |
+| **🕒 3:55 مساءً** | "!انتهى الدوام" |
+| **💤 كل 5 دقائق** | إيموجي نعسان 😴 |
+| **🍽️ أكل** | قائمة النقر يمين: ☕ 🍒 🐉 🍓 🍇 🍉 |
 
-1. افتح `game.html` أو قم بزيارة صفحة الويب المنشورة
-2. في الشاشة الرئيسية، اختر حالتك المزاجية الحالية (حزين / سعيد / غاضب / متعب)
-3. شاهد الرسوم المتحركة التي تؤديها الاء لك
-4. استخدم الشريط الجانبي الأيسر لاستكشاف خزانة الملابس والموسيقى والمذكرات والمزيد
-5. اضغط على أزرار اللغة في الأعلى للتبديل بين اللغات
+التصغير يخفي الاء إلى شريط النظام؛ انقر أيقونة الشريط لاستعادتها.
 
-### التقنيات المستخدمة
+### الميزات الأخرى
 
-- HTML/CSS/JavaScript خالص (بدون إطار عمل)
-- Capacitor (تعبئة Android / iOS)
-- Electron (تطبيق سطح مكتب Windows)
-- Supabase (مصادقة المستخدم)
-- Service Worker (دعم PUA دون اتصال)
+- 👗 **خزانة الملابس**: 6 أنظمة ألوان للاء
+- 🎵 **مكتبة الموسيقى**: مشغل موسيقى مع التحكم في الصوت
+- 📝 **مذكرات**: يوميات مع مزامنة سحابية
+- 👑 **الأميرة الاء**: معرض الصور
+- 🌐 **ثلاث لغات**: القائمة افتراضيًا بالعربية
+- 🔑 **حساب**: تسجيل دخول Supabase مع تذكر كلمة المرور
+
+### شريط القائمة
+
+| القائمة | المحتوى |
+|---------|---------|
+| Happy Alaa | حول / خروج |
+| اللغة \| Lang | 中文 / English / عربي |
+| علاء المكتب | استدعاء علاء المكتب |
+| النسخة الإلكترونية | فتح نسخة الويب |
+
+### كيفية التشغيل
+
+| الإصدار | الطريقة |
+|---------|---------|
+| **سطح المكتب** | انقر نقرًا مزدوجًا على `Happy Alaa.lnk` |
+| **الويب** | https://jia-621.github.io/Happy-Alaa/ |
 
 ---
 
-## 📁 Project Structure | 项目结构 | هيكل المشروع
+## 📖 中文
+
+### 游戏介绍
+
+**Happy Alaa（开心阿拉）** 是一款温馨的情感互动游戏。主角 **Alaa** 是一个可爱的卡通角色，她会根据你的情绪选择做出不同的反应。同时还带有 **桌面Alaa模式**，Alaa 可以常驻在你的桌面上陪伴你。
+
+### 四种情绪模式
+
+| 模式 | 描述 |
+|------|------|
+| 😢 **伤心** | Alaa 的好朋友会走过来安慰她，直到 Alaa 重新露出笑容 |
+| 😊 **开心** | Alaa 和她最好的朋友 Zo 一起蹦跳，洒满爱心和星星 |
+| 😡 **生气** | Alaa 生气地跺脚，情绪发泄完后慢慢平静下来 |
+| 😴 **劳累** | 夜色降临，Alaa 感到疲惫，需要好好休息 |
+
+### 桌面Alaa模式 🐱
+
+通过菜单栏 **桌面Alaa** 召唤，Alaa 会出现在桌面右下角：
+
+| 交互 | 功能 |
+|------|------|
+| **双击** Alaa | 弹随机 emoji |
+| **右键** Alaa | 菜单：打开游戏 / 缩放至托盘 / 切换状态 / 吃东西 / 睡觉 |
+| **拖动** | 按住 Alaa 周围空白区域可移动位置 |
+| **🕒 下午 3:55** | 自动弹出 "!انتهى الدوام"（下班啦） |
+| **💤 每 5 分钟** | 犯困表情 + 😴 泡泡 |
+| **🍽️ 吃东西** | 右键可选：☕咖啡 🍒樱桃 🐉火龙果 🍓草莓 🍇葡萄 🍉西瓜 |
+
+缩放至最小后 Alaa 会隐藏到系统托盘，点击托盘图标恢复。
+
+### 其他功能
+
+- 👗 **衣橱柜**：更换 Alaa 的服装配色（6 种配色方案）
+- 🎵 **音乐库**：内置背景音乐播放器，支持音量调节
+- 📝 **日记**：记录每天的心情日记（支持 Supabase 云同步）
+- 👑 **公主 Alaa**：照片画廊
+- 🌐 **三语**：中文 / English / العربية，**菜单栏默认阿拉伯语**
+- 🔑 **账号系统**：基于 Supabase 的登录注册，支持记住密码
+
+### 桌面版菜单栏
+
+| 菜单 | 内容 |
+|------|------|
+| Happy Alaa | 关于 / 退出 |
+| اللغة \| Lang | 中文 / English / عربي（切换菜单+游戏语言） |
+| علاء المكتب | 召唤桌面Alaa |
+| النسخة الإلكترونية | 浏览器打开网页版 |
+
+### 如何运行
+
+| 版本 | 方式 |
+|------|------|
+| **桌面版** | 双击 `Happy Alaa.lnk` 或 `desktop/启动桌面版.bat` |
+| **网络版** | https://jia-621.github.io/Happy-Alaa/ |
+
+### 技术栈
+
+- 纯 HTML/CSS/JavaScript
+- Electron 33（Windows 桌面版 + 桌面Alaa）
+- Capacitor（Android / iOS 打包）
+- Supabase（用户认证 + 日记云同步）
+- PWA（Service Worker 离线支持）
+
+---
+
+## 📖 English
+
+### Introduction
+
+**Happy Alaa** is a heartwarming emotion-interactive game featuring a cute cartoon character named Alaa. It also includes a **Desktop Alaa mode** — Alaa can live on your desktop!
+
+### Emotion Modes
+
+| Mode | Description |
+|------|-------------|
+| 😢 **Sad** | Alaa's friend comes to cheer her up until she smiles again |
+| 😊 **Happy** | Alaa and her best friend Zo bounce together with hearts and stars |
+| 😡 **Angry** | Alaa stomps angrily, then gradually calms down |
+| 😴 **Tired** | Night falls, Alaa needs a good rest |
+
+### Desktop Alaa Mode 🐱
+
+Summon via menu **Desktop Alaa**:
+
+| Action | Behavior |
+|--------|----------|
+| **Double-click** Alaa | Random emoji pop |
+| **Right-click** Alaa | Menu: Open Game / Minimize to Tray / Switch State / Eat / Sleep |
+| **Drag** | Grab empty space around Alaa to move |
+| **🕒 3:55 PM** | "!انتهى الدوام" (time to go home!) |
+| **💤 Every 5 min** | Sleepy emoji 😴 |
+| **🍽️ Eat** | Right-click menu: ☕ 🍒 🐉 🍓 🍇 🍉 |
+
+Minimize hides Alaa to the system tray; click the tray icon to restore.
+
+### Other Features
+
+- 👗 **Wardrobe**: 6 color schemes for Alaa
+- 🎵 **Music Library**: Background music with volume control
+- 📝 **Diary**: Daily journal with Supabase cloud sync
+- 👑 **Princess Alaa**: Photo gallery
+- 🌐 **Trilingual**: 中文 / English / العربية — **menu defaults to Arabic**
+- 🔑 **Account**: Supabase login with remember-me
+
+### Desktop Menu Bar
+
+| Menu | Items |
+|------|-------|
+| Happy Alaa | About / Exit |
+| اللغة \| Lang | 中文 / English / عربي (switches both menu & game language) |
+| علاء المكتب | Summon Desktop Alaa |
+| النسخة الإلكترونية | Open web version in browser |
+
+### How to Run
+
+| Version | Method |
+|---------|--------|
+| **Desktop** | Double-click `Happy Alaa.lnk` or run `desktop/启动桌面版.bat` |
+| **Web** | https://jia-621.github.io/Happy-Alaa/ |
+
+### Tech Stack
+
+- Vanilla HTML/CSS/JavaScript
+- Electron 33 (Windows desktop + Desktop Alaa)
+- Capacitor (Android / iOS packaging)
+- Supabase (auth + diary sync)
+- PWA (Service Worker)
+
+---
+
+## 📁 项目结构
 
 ```
 Happy Alaa/
-├── game.html              # 主游戏文件 | Main game file | ملف اللعبة الرئيسي
-├── index.html             # 备用入口 | Alternative entry | مدخل بديل
-├── manifest.json          # PWA 清单 | PWA manifest | بيان PWA
-├── service-worker.js      # 离线缓存 | Offline cache | التخزين المؤقت دون اتصال
-├── supabase-config.js     # 数据库配置 | Database config | إعدادات قاعدة البيانات
-├── capacitor.config.json  # Capacitor 配置 | Capacitor config | إعدادات Capacitor
-├── package.json           # 依赖配置 | Dependencies | تبعيات المشروع
-├── Character Model/       # 角色模型图片 | Character sprites | صور الشخصيات
-├── music/                 # 音乐文件 | Music files | ملفات الموسيقى
-├── Princess Alaa/         # 公主相册 | Princess photo gallery | معرض صور الأميرة
-├── www/                   # Web 部署目录 | Web deploy directory | دليل نشر الويب
-├── android/               # Android 平台 | Android platform | منصة Android
-├── ios/                   # iOS 平台 | iOS platform | منصة iOS
-└── README.md              # 本文件 | This file | هذا الملف
+├── game.html              # 主游戏
+├── index.html             # 入口
+├── manifest.json          # PWA 清单
+├── service-worker.js      # 离线缓存
+├── supabase-config.js     # 数据库配置
+├── capacitor.config.json  # Capacitor 配置
+├── Character Model/       # 角色精灵
+├── music/                 # 音乐文件
+├── Princess Alaa/         # 公主相册
+├── icon-192.png           # App 图标
+├── Happy Alaa.lnk         # 桌面版快捷方式
+├── www/                   # Web 部署目录
+├── android/               # Android 平台
+├── ios/                   # iOS 平台
+├── desktop/               # Electron 桌面版
+│   ├── main.js            #   主进程
+│   ├── pet.html           #   桌面Alaa UI
+│   ├── preload.js         #   预加载
+│   ├── package.json       #   依赖
+│   └── 启动桌面版.bat      #   启动脚本
+└── README.md
 ```
 
 ---
-
-## 🚀 Quick Start | 快速开始 | البدء السريع
-
-1. **Web**: Open `game.html` directly in a browser, or deploy the `www/` folder to any static hosting (GitHub Pages, Netlify, Vercel)
-2. **Android**: Run `build-apk.bat` or use Android Studio with the `android/` folder
-3. **iOS**: Open `ios/App/App.xcodeproj` in Xcode
-4. **Windows**: The Electron build is in `DesktopAlaa/`
-
----
-
-*Made with ❤️ for Alaa | 为 Alaa 用心制作 | صُنع بـ ❤️ من أجل الاء*

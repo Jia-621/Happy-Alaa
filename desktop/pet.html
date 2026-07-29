@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: rgba(255,255,255,0.005); /* barely visible, enables drag region */
+  overflow: hidden;
+  user-select: none;
+  -webkit-app-region: drag; /* OS-native window dragging */
+}
+
+.pet-container {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-end;
+  position: relative;
+  -webkit-app-region: drag;
+}
+
+/* Character sprite — no-drag so right-click + dblclick reach JS */
+.char-wrap {
+  width: 110px; height: 110px;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.3s;
+}
+.char-wrap.bounce {
+  animation: pet-bounce 0.5s ease-out;
+}
+@keyframes pet-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.2); }
+  60% { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
+
+.char-wrap img {
+  width: 100px; height: 100px;
+  object-fit: contain;
+  filter: drop-shadow(2px 4px 10px rgba(0,0,0,0.4));
+}
+.char-wrap .fallback {
+  font-size: 80px;
+  filter: drop-shadow(2px 4px 10px rgba(0,0,0,0.4));
+}
+
+/* Emoji bubble — moved up (bottom: 140px was 125px) */
+.bubble {
+  position: absolute; bottom: 120px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px; padding: 4px 10px;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10; white-space: nowrap;
+  font-family: 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif;
+}
+.bubble.show { opacity: 1; }
+.bubble::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid rgba(255,255,255,0.92);
+}
+
+/* Text bubble */
+.bubble-text {
+  position: absolute; bottom: 120px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.92);
+  border-radius: 12px; padding: 5px 12px;
+  font-size: 13px; font-weight: 700;
+  color: #FF6B6B;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 10; white-space: nowrap;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+.bubble-text.show { opacity: 1; }
+.bubble-text::after {
+  content: ''; position: absolute; top: 100%; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid rgba(255,255,255,0.92);
+}
+
+/* Shadow */
+.shadow {
+  width: 60px; height: 10px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 50%; margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+<div class="pet-container">
+  <div class="bubble" id="bubble"></div>
+  <div class="bubble-text" id="bubbleText"></div>
+  <div class="char-wrap" id="charWrap" title="Alaa">
+    <span class="fallback" id="fallback">🐱</span>
+    <img id="charImg" src="" style="display:none" draggable="false" alt="Alaa">
+  </div>
+  <div class="shadow"></div>
+</div>
+
+<script>
+// ============================================================
+// SPRITES
+// ============================================================
+const SPRITE_SET = '../Character Model/Blue-white/';
+const SPRITES = {
+  normal:        { file: 'normal.png',       label: 'Normal',       emoji: '👋' },
+  happy:         { file: 'happy.png',        label: 'Happy',        emoji: '😊' },
+  good:          { file: 'good.png',         label: 'Good',         emoji: '👍' },
+  happiness:     { file: 'happiness.png',    label: 'Happiness',    emoji: '🥰' },
+  bigHappiness:  { file: 'big happines.png', label: 'Big Happy',    emoji: '🎉' },
+};
+const SPRITE_KEYS = ['normal', 'happy', 'good', 'happiness', 'bigHappiness'];
+
+let currentKey = 'normal';
+let bubbleTimer = null;
+
+// ============================================================
+// DOM
+// ============================================================
+const img = document.getElementById('charImg');
+const fallback = document.getElementById('fallback');
+const bubble = document.getElementById('bubble');
+const bubbleText = document.getElementById('bubbleText');
+const charWrap = document.getElementById('charWrap');
+
+// ============================================================
+// LOAD SPRITE
+// ============================================================
+function loadSprite(key) {
+  const s = SPRITES[key];
+  if (!s) return;
+  const preload = new Image();
+  preload.onload = () => {
+    img.src = SPRITE_SET + s.file;
+    img.style.display = 'block';
+    fallback.style.display = 'none';
+    currentKey = key;
+  };
+  preload.onerror = () => { fallback.textContent = '👧'; };
+  preload.src = SPRITE_SET + s.file;
+}
+loadSprite('normal');
+
+// ============================================================
+// BUBBLES
+// ============================================================
+function showEmoji(emoji, duration = 2500) {
+  clearTimeout(bubbleTimer);
+  bubble.textContent = emoji;
+  bubble.classList.add('show');
+  bubbleTimer = setTimeout(() => bubble.classList.remove('show'), duration);
+}
+
+function showTextBubble(text, duration = 4000) {
+  clearTimeout(bubbleTimer);
+  bubbleText.textContent = text;
+  bubbleText.classList.add('show');
+  bubbleTimer = setTimeout(() => {
+    bubbleText.classList.remove('show');
+  }, duration);
+}
+
+// ============================================================
+// Alaa interaction: double-click emoji | right-click menu
+// Drag: grab empty space around Alaa (OS native via -webkit-app-region)
+// ============================================================
+
+charWrap.addEventListener('dblclick', (e) => {
+  e.stopPropagation();
+  drag = null;
+  charWrap.classList.remove('bounce');
+  void charWrap.offsetWidth;
+  charWrap.classList.add('bounce');
+  const emoji = casualEmojis[Math.floor(Math.random() * casualEmojis.length)];
+  showEmoji(emoji, 2000);
+});
+
+// Right-click → Electron main process handles context menu
+charWrap.addEventListener('contextmenu', (e) => {
+  // Main process builds the menu
+});
+
+// ============================================================
+// IPC: sprite switch (called from Electron right-click menu)
+// ============================================================
+window.switchSprite = function(key) {
+  loadSprite(key);
+  showEmoji(SPRITES[key].emoji, 2000);
+};
+
+// ============================================================
+// IPC: eat food (called from Electron right-click menu)
+// ============================================================
+window.eatFood = function(foodEmoji) {
+  loadSprite('happy');
+  showEmoji(foodEmoji, 3000);
+  // Return to normal after eating
+  setTimeout(() => loadSprite('normal'), 3500);
+};
+
+// ============================================================
+// 3:55 PM — switch to bigHappiness for 5s, then 2min later text
+// ============================================================
+let three55Fired = false;
+let three55TextFired = false;
+
+function check355PM() {
+  const now = new Date();
+  const hour = now.getHours();
+  const min = now.getMinutes();
+
+  // 3:55 PM: switch to big happiness for 5 seconds
+  if (hour === 15 && min === 55 && !three55Fired) {
+    three55Fired = true;
+    loadSprite('bigHappiness');
+    showEmoji('🎉', 5000);
+    // After 5 seconds, switch back to normal
+    setTimeout(() => loadSprite('normal'), 5500);
+  }
+
+  // 3:57 PM (2 min after 3:55): Arabic "下班了" text
+  if (hour === 15 && min === 57 && !three55TextFired) {
+    three55TextFired = true;
+    loadSprite('bigHappiness');
+    showTextBubble('!انتهى الدوام', 5000);
+    setTimeout(() => loadSprite('normal'), 5500);
+  }
+
+  // Reset flags after 4:30 PM for next day
+  if (hour === 16 && min >= 30) {
+    three55Fired = false;
+    three55TextFired = false;
+  }
+}
+setInterval(check355PM, 30000); // check every 30s
+check355PM();
+
+// ============================================================
+// EVERY 5 MINUTES — happiness sprite + sleep emoji
+// ============================================================
+function sleepMoment() {
+  loadSprite('happiness');
+  const emoji = ['💤', '😴', '💤💤'][Math.floor(Math.random() * 3)];
+  showEmoji(emoji, 4000);
+  // Return to normal after
+  setTimeout(() => loadSprite('normal'), 4500);
+}
+setInterval(sleepMoment, 5 * 60 * 1000);
+setTimeout(sleepMoment, 30000); // first one after 30s
+
+// ============================================================
+// RANDOM EMOJI POP (every 2-4 min)
+// ============================================================
+const casualEmojis = [
+  '✨', '❤️', '🌟', '💕', '🎵', '🌸', '☀️', '🌈', '⭐', '🍀',
+  '🍡', '🍬', '🎀', '💖', '🌺', '🦋', '🍒'
+];
+
+function randomEmojiPop() {
+  if (bubble.classList.contains('show')) return;
+  const emoji = casualEmojis[Math.floor(Math.random() * casualEmojis.length)];
+  showEmoji(emoji, 2500);
+}
+function scheduleNextEmoji() {
+  const delay = 120000 + Math.random() * 120000;
+  setTimeout(() => {
+    randomEmojiPop();
+    scheduleNextEmoji();
+  }, delay);
+}
+scheduleNextEmoji();
+
+// ============================================================
+// FIRST LOAD
+// ============================================================
+setTimeout(() => showEmoji('👋', 2500), 1000);
+
+// Expose for Electron
+window.sayRandomPhrase = function() {
+  const emoji = casualEmojis[Math.floor(Math.random() * casualEmojis.length)];
+  showEmoji(emoji, 2500);
+};
+</script>
+</body>
+</html>
